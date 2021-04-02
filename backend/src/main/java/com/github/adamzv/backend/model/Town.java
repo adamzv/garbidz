@@ -1,26 +1,25 @@
 package com.github.adamzv.backend.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.sun.istack.NotNull;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "town")
-// TODO: research problems with circular dependencies
-// temp. solution: https://dzone.com/articles/circular-dependencies-jackson
-@JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
 public class Town {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @NotNull
     private String town;
 
     @Column(length = 5)
+    @NotNull
     private String zipcode;
 
+    // problems with circular dependencies were solved by using unidirectional mapping
     @ManyToOne
     @JoinColumn(name = "id_region", nullable = false)
     private Region region;
@@ -55,5 +54,15 @@ public class Town {
 
     public void setRegion(Region region) {
         this.region = region;
+    }
+
+    @Override
+    public String toString() {
+        return "Town{" +
+                "id=" + id +
+                ", town='" + town + '\'' +
+                ", zipcode='" + zipcode + '\'' +
+                ", region=" + region +
+                '}';
     }
 }

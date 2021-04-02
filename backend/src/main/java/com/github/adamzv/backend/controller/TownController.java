@@ -1,13 +1,11 @@
 package com.github.adamzv.backend.controller;
 
 import com.github.adamzv.backend.exception.TownNotFoundException;
+import com.github.adamzv.backend.model.Region;
 import com.github.adamzv.backend.model.Town;
 import com.github.adamzv.backend.repository.RegionRepository;
 import com.github.adamzv.backend.repository.TownRepository;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,13 +22,50 @@ public class TownController {
     }
 
     @GetMapping
-    public List<Town> getAllTowns() {
-        return townRepository.findAll();
+    public List<Town> getTowns(@RequestParam(name = "region_id", required = false) Long id) {
+        if (id != null) {
+            return townRepository.findAllByRegionId(id);
+        } else {
+            return townRepository.findAll();
+        }
     }
 
     @GetMapping("/{id}")
     public Town getTown(@PathVariable Long id) {
         return townRepository.findById(id)
                 .orElseThrow(() -> new TownNotFoundException(id));
+    }
+
+    @PostMapping
+    public Town newTown(@RequestBody Town town) {
+
+        // setting town id to 0 forces JPA to generate a new id
+        // this prevents users from setting their own id for object in request
+        town.setId(0L);
+        // JSON request may not include whole region object, so we'll search for the region object
+        // and then set it to town object, otherwise throw an exception because the object with specified id
+        // does not exist in db
+        Region region = regionRepository.findById(town.getRegion().getId())
+                .orElseThrow(() -> new RuntimeException("Region with id = " + town.getRegion().getId() + " does not exist"));
+        town.setRegion(region);
+        return townRepository.save(town);
+    }
+
+    @PutMapping("/{id}")
+    public Town updateTown(@PathVariable Long id, @RequestBody Town newTown) {
+        return townRepository.findById(id)
+                .map(town -> {
+                    town.setTown(newTown.getTown());
+                    town.setZipcode(newTown.getZipcode());
+                    town.setRegion(regionRepository.findById(newTown.getRegion().getId()).get());
+                    return townRepository.save(town);
+                })
+                .orElseThrow(() -> new RuntimeException("Town with id " + id + " can not be updated!"));
+    }
+
+    // TODO: error validation for delete methods
+    @DeleteMapping("/{id}")
+    public void deleteTown(@PathVariable Long id) {
+        townRepository.deleteById(id);
     }
 }

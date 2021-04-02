@@ -19,4 +19,10 @@ public class GlobalControllerAdvice {
     String townNotFoundHandler(TownNotFoundException ex) {
         return ex.getMessage();
     }
+
+    @ExceptionHandler(RuntimeException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    String runtimeException(RuntimeException ex) {
+        return ex.getMessage();
+    }
 }
