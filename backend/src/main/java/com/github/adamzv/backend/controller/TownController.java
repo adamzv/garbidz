@@ -1,5 +1,6 @@
 package com.github.adamzv.backend.controller;
 
+import com.github.adamzv.backend.exception.RegionNotFoundException;
 import com.github.adamzv.backend.exception.TownNotFoundException;
 import com.github.adamzv.backend.model.Region;
 import com.github.adamzv.backend.model.Town;
@@ -46,7 +47,7 @@ public class TownController {
         // and then set it to town object, otherwise throw an exception because the object with specified id
         // does not exist in db
         Region region = regionRepository.findById(town.getRegion().getId())
-                .orElseThrow(() -> new RuntimeException("Region with id = " + town.getRegion().getId() + " does not exist"));
+                .orElseThrow(() -> new RegionNotFoundException(town.getRegion().getId()));
         town.setRegion(region);
         return townRepository.save(town);
     }
