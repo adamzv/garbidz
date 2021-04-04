@@ -23,15 +23,16 @@ public class RoleController {
         return roleRepository.findAll();
     }
 
-    @PostMapping
-    public Role newRole(@RequestBody Role role) {
-        return roleRepository.save(role);
-    }
-
     @GetMapping("/{id}")
     public Role getRole(@PathVariable Long id) {
         return roleRepository.findById(id)
                 .orElseThrow(() -> new RoleNotFoundException(id));
+    }
+
+    @PostMapping
+    public Role newRole(@RequestBody Role role) {
+        role.setId(0L);
+        return roleRepository.save(role);
     }
 
     @PutMapping("/{id}")
@@ -41,6 +42,7 @@ public class RoleController {
                     role.setRole(newRole.getRole());
                     return roleRepository.save(role);
                 })
+                // TODO: use orElseThrow instead of creating a new role
                 .orElseGet(() -> {
                     newRole.setId(id);
                     return roleRepository.save(newRole);
