@@ -12,6 +12,7 @@ import com.github.adamzv.backend.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,12 +24,14 @@ public class UserController {
     private UserRepository userRepository;
     private RoleRepository roleRepository;
     private AddressRepository addressRepository;
+    private PasswordEncoder passwordEncoder;
 
     // use constructor base injection since using @Autowired is not recommended
-    public UserController(UserRepository userRepository, RoleRepository roleRepository, AddressRepository addressRepository) {
+    public UserController(UserRepository userRepository, RoleRepository roleRepository, AddressRepository addressRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.addressRepository = addressRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping
@@ -43,8 +46,10 @@ public class UserController {
     }
 
     @PostMapping
-    public User newUser(@RequestBody User user) {
+    public Long newUser(@RequestBody User user) {
         user.setId(0L);
+
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         // set user role
         Role role = roleRepository.findById(user.getRole().getId())
@@ -56,7 +61,7 @@ public class UserController {
                 .orElseThrow(() -> new AddressNotFoundException(user.getAddress().getId()));
         user.setAddress(address);
 
-        return userRepository.save(user);
+        return userRepository.save(user).getId();
     }
 
     @PutMapping("/{id}")
