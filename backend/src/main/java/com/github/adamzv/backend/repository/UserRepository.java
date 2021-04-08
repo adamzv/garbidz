@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 // JpaRepository extends PagingAndSortingRepository which extends CrudRepository
 public interface UserRepository extends JpaRepository<User, Long> {
-    User findByEmail(String email);
+    User findUserByEmail(String email);
 }
