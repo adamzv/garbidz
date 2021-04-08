@@ -38,6 +38,12 @@ public class UserController {
     private AddressRepository addressRepository;
     private PasswordEncoder passwordEncoder;
     // TODO: move login and signup features to a separate controller
+    // TODO: logout endpoint with spring provided logout functionality probably won't work properly,
+    // so we have to figure out a way to invalidate token when user wants to logout.
+    // Token expiration is handled automatically, for manual invalidation we will probably have to create a blacklist
+    // eg.: https://stackoverflow.com/questions/21978658/invalidating-json-web-tokens
+    // or https://stackoverflow.com/questions/43569723/jwt-authentication-how-to-implement-logout
+
     private AuthenticationManager authenticationManager;
 
     // use constructor base injection since using @Autowired is not recommended

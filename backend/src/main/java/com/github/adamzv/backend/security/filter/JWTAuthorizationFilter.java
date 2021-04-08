@@ -47,6 +47,9 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         if (token != null) {
             String user = JWT.require(Algorithm.HMAC256(SECRET.getBytes()))
                     .build()
+                    // TODO: com.auth0.jwt.exceptions.TokenExpiredException: The Token has expired
+                    // https://github.com/auth0/java-jwt/blob/master/lib/src/main/java/com/auth0/jwt/JWTVerifier.java#L273
+                    // response is handled correctly (401), just need to add a catch clause here
                     .verify(token.replace(TOKEN_PREFIX, ""))
                     .getSubject();
 
