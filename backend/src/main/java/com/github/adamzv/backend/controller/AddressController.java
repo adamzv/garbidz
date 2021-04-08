@@ -49,7 +49,7 @@ public class AddressController {
         return addressRepository.findById(id)
                 .map(address -> {
                     address.setAddress(newAddress.getAddress());
-                    address.setTown(townRepository.findById(address.getTown().getId()).get());
+                    address.setTown(townRepository.findById(newAddress.getTown().getId()).get());
                     return addressRepository.save(address);
                 })
                 .orElseThrow(() -> new TownNotFoundException(id));
