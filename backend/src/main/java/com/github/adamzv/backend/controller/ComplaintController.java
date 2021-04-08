@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/complaints")
@@ -34,8 +35,14 @@ public class ComplaintController {
         return complaintRepository.findAll(pageable);
     }
 
+    @GetMapping("/{id}")
+    public Complaint getComplaint(@PathVariable Long id) {
+        return complaintRepository.findById(id)
+                .orElseThrow(() -> new ComplaintNotFoundException(id));
+    }
+
     @PostMapping
-    public Complaint newComplaint(@RequestBody Complaint complaint) {
+    public Complaint newComplaint(@RequestBody Complaint complaint, @RequestParam MultipartFile multipartImage) throws Exception {
         complaint.setId(0L);
 
         User user = userRepository.findById(complaint.getUser().getId())
@@ -45,6 +52,8 @@ public class ComplaintController {
         Address address = addressRepository.findById(complaint.getAddress().getId())
                 .orElseThrow(() -> new AddressNotFoundException(complaint.getAddress().getId()));
         complaint.setAddress(address);
+
+        complaint.setImage(multipartImage.getBytes());
 
         return complaintRepository.save(complaint);
     }

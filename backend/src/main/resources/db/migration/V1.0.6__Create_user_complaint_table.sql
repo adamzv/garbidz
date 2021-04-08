@@ -10,7 +10,7 @@ CREATE  TABLE IF NOT EXISTS `user_complaint` (
      INDEX `fk_complaints_users_idx` (`id_user` ASC) ,
      CONSTRAINT `fk_complaints_users`
          FOREIGN KEY (`id_user` )
-             REFERENCES `user_report` (`id` )
+             REFERENCES `user_account` (`id` )
              ON DELETE NO ACTION
              ON UPDATE NO ACTION,
      INDEX `fk_complaints_addresses_idx` (`id_address` ASC) ,
