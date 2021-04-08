@@ -20,10 +20,15 @@ import static com.github.adamzv.backend.security.configuration.SecurityConfigura
 
 @EnableWebSecurity
 @Configuration
-@EnableGlobalMethodSecurity(jsr250Enabled = true)
+@EnableGlobalMethodSecurity(jsr250Enabled = true,
+        prePostEnabled = true,
+        securedEnabled = true)
 public class WebSecurity extends WebSecurityConfigurerAdapter {
 
     private UserDetailsServiceImpl userDetailsService;
+
+    @Autowired
+    private AuthEntryPointJwt unauthorizedHandler;
 
     public WebSecurity(UserDetailsServiceImpl userDetailsService) {
         this.userDetailsService = userDetailsService;
@@ -34,23 +39,19 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
     }
 
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().and().authorizeRequests()
-                .antMatchers(HttpMethod.POST, SIGN_UP_URL).anonymous()//permitAll()
+        http.authorizeRequests()
+                .antMatchers(HttpMethod.POST, SIGN_UP_URL).permitAll()
                 // AUTH_WHITELIST enables swagger
                 .antMatchers(AUTH_WHITELIST).permitAll()
-                .antMatchers(HttpMethod.GET).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(new JWTAuthenticationFilter(authenticationManager()))
                 .addFilter(new JWTAuthorizationFilter(authenticationManager()))
-                .anonymous().and()
+                .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-//                .logout()
-//                .permitAll();
-        http.csrf().disable();
+        http.cors().and().csrf().disable();
     }
 
     @Bean

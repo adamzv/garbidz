@@ -16,12 +16,12 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
-import static com.github.adamzv.backend.security.configuration.SecurityConfigurationConstants.*;
+import static com.github.adamzv.backend.security.configuration.SecurityConfigurationConstants.SECRET;
+import static com.github.adamzv.backend.security.configuration.SecurityConfigurationConstants.TOKEN_EXPIRATION;
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -29,8 +29,6 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
-
-        setFilterProcessesUrl(LOGIN_URL);
     }
 
     @Override
