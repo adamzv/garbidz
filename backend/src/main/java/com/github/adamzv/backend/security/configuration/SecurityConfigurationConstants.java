@@ -2,8 +2,8 @@ package com.github.adamzv.backend.security.configuration;
 
 public class SecurityConfigurationConstants {
     public static final String SECRET = "SUPER_SECRET_STRING_PLEASE_CHANGE_ME";
-    public static final String SIGN_UP_URL = "/users";
-    public static final String LOGIN_URL = "/users/login";
+    public static final String SIGN_UP_URL = "/auth/signup";
+    public static final String LOGIN_URL = "/auth/signin";
     public static final String TOKEN_PREFIX = "Bearer ";
     public static final String HEADER_STRING = "Authorization";
     public static final long TOKEN_EXPIRATION = 3_600_000;

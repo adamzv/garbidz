@@ -1,5 +1,6 @@
 package com.github.adamzv.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.NotNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,7 +26,13 @@ public class User implements UserDetails {
     private String email;
 
     @NotNull
+    @JsonIgnore
     private String password;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_token_id")
+    @JsonIgnore
+    private UserToken token;
 
     @ManyToOne
     @JoinColumn(name = "id_role", nullable = false)
@@ -69,6 +76,14 @@ public class User implements UserDetails {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public UserToken getToken() {
+        return token;
+    }
+
+    public void setToken(UserToken token) {
+        this.token = token;
     }
 
     public Role getRole() {
@@ -122,5 +137,19 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", token=" + token +
+                ", role=" + role +
+                ", address=" + address +
+                '}';
     }
 }

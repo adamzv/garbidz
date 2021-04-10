@@ -41,9 +41,10 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
 
-        setFilterProcessesUrl("/api/users/login");
+        setFilterProcessesUrl("/api" + LOGIN_URL);
     }
 
+    // TODO: test sign in without this filter and if it works properly, then remove it
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         try {
