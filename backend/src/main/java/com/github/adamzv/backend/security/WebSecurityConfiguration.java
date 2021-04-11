@@ -1,6 +1,5 @@
 package com.github.adamzv.backend.security;
 
-import com.github.adamzv.backend.security.filter.JWTAuthenticationFilter;
 import com.github.adamzv.backend.security.filter.JWTAuthorizationFilter;
 import com.github.adamzv.backend.security.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +41,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .addFilter(new JWTAuthorizationFilter(authenticationManager()))
+                .addFilter(new JWTAuthorizationFilter(authenticationManager(), userDetailsService))
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, SIGN_UP_URL).permitAll()
                 .antMatchers(HttpMethod.POST, LOGIN_URL).permitAll()
@@ -52,11 +51,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-//                .and();
-//                .logout(httpSecurityLogoutConfigurer -> httpSecurityLogoutConfigurer
-//                        .logoutUrl("/auth/logout")
-//                        //.addLogoutHandler(new SecurityContextLogoutHandler())
-//                );
         http.cors().and().csrf().disable();
     }
 

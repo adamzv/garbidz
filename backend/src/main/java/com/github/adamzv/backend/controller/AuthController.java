@@ -21,12 +21,6 @@ import java.util.Date;
 
 import static com.github.adamzv.backend.security.configuration.SecurityConfigurationConstants.*;
 
-// TODO: logout endpoint with spring provided logout functionality probably won't work properly,
-// so we have to figure out a way to invalidate token when user wants to logout.
-// Token expiration is handled automatically, for manual invalidation we will probably have to create a blacklist
-// eg.: https://stackoverflow.com/questions/21978658/invalidating-json-web-tokens
-// or https://stackoverflow.com/questions/43569723/jwt-authentication-how-to-implement-logout
-
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -46,7 +40,6 @@ public class AuthController {
     }
 
     @PostMapping("/signin")
-    // TODO: use Map<String, String> instead of UserLogin model
     // TODO: validation
     public ResponseEntity<String> signinUser(@RequestBody UserLogin login) {
         Authentication authentication = authenticationManager.authenticate(

@@ -2,7 +2,11 @@ package com.github.adamzv.backend.security.filter;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.github.adamzv.backend.model.User;
+import com.github.adamzv.backend.model.UserToken;
+import com.github.adamzv.backend.security.service.UserDetailsServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,8 +27,11 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
     private static final Logger logger = LoggerFactory.getLogger(JWTAuthorizationFilter.class);
 
-    public JWTAuthorizationFilter(AuthenticationManager authenticationManager) {
+    private UserDetailsServiceImpl userService;
+
+    public JWTAuthorizationFilter(AuthenticationManager authenticationManager, UserDetailsServiceImpl userService) {
         super(authenticationManager);
+        this.userService = userService;
     }
 
     @Override
@@ -37,7 +44,6 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         }
 
         UsernamePasswordAuthenticationToken authentication = getAuthentication(request);
-        logger.info(authentication.toString());
         SecurityContextHolder.getContext().setAuthentication(authentication);
         chain.doFilter(request, response);
     }
@@ -46,16 +52,32 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         String token = request.getHeader(HEADER_STRING);
         if (token != null) {
             try {
+                token = token.replace(TOKEN_PREFIX, "");
                 String user = JWT.require(Algorithm.HMAC256(SECRET.getBytes()))
                         .build()
                         .verify(token.replace(TOKEN_PREFIX, ""))
                         .getSubject();
 
                 if (user != null) {
-                    return new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
+
+                    // check if token is in blacklist
+                    UserToken userToken = ((User) userService.loadUserByUsername(user)).getToken();
+                    if (!userToken.getRevoked()) {
+                        if (token.equals(userToken.getToken())) {
+                            return new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
+                        }
+                    } else {
+                        return null;
+                    }
                 }
             } catch (TokenExpiredException e) {
                 // TODO: refresh token
+                logger.error("TokenExpiredException");
+                logger.error(e.getMessage());
+                return null;
+            } catch (JWTVerificationException ex) {
+                logger.error("JWTVerificationException");
+                logger.error(ex.getMessage());
                 return null;
             }
             return null;
