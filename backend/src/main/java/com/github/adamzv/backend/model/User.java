@@ -1,6 +1,7 @@
 package com.github.adamzv.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sun.istack.NotNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,12 +27,12 @@ public class User implements UserDetails {
     private String email;
 
     @NotNull
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_token_id")
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private UserToken token;
 
     @ManyToOne
@@ -138,4 +139,5 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
 }

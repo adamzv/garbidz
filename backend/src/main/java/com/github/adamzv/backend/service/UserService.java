@@ -9,6 +9,9 @@ import com.github.adamzv.backend.model.User;
 import com.github.adamzv.backend.repository.AddressRepository;
 import com.github.adamzv.backend.repository.RoleRepository;
 import com.github.adamzv.backend.repository.UserRepository;
+import com.github.adamzv.backend.security.service.UserDetailsServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,6 +24,9 @@ public class UserService {
     private RoleRepository roleRepository;
     private AddressRepository addressRepository;
     private PasswordEncoder passwordEncoder;
+
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
+
 
     public UserService(UserRepository userRepository, RoleRepository roleRepository, AddressRepository addressRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
