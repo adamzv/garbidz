@@ -3,6 +3,8 @@ package com.github.adamzv.backend.model;
 import com.sun.istack.NotNull;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "user_account")
@@ -31,6 +33,9 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "id_address", nullable = false)
     private Address address;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private Set<ContainerUser> containerUser = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -86,5 +91,13 @@ public class User {
 
     public void setAddress(Address address) {
         this.address = address;
+    }
+
+    public Set<ContainerUser> getContainerUser() {
+        return containerUser;
+    }
+
+    public void setContainerUser(Set<ContainerUser> containerUser) {
+        this.containerUser = containerUser;
     }
 }
