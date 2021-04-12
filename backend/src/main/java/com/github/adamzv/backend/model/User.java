@@ -1,12 +1,16 @@
 package com.github.adamzv.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sun.istack.NotNull;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.Collection;
 
-@Entity
-@Table(name = "user_account")
-public class User {
+@Entity(name = "user_account")
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,10 +23,17 @@ public class User {
     private String surname;
 
     @NotNull
+    @Column(unique = true)
     private String email;
 
     @NotNull
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_token_id")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private UserToken token;
 
     @ManyToOne
     @JoinColumn(name = "id_role", nullable = false)
@@ -64,12 +75,16 @@ public class User {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public UserToken getToken() {
+        return token;
+    }
+
+    public void setToken(UserToken token) {
+        this.token = token;
     }
 
     public Role getRole() {
@@ -87,4 +102,42 @@ public class User {
     public void setAddress(Address address) {
         this.address = address;
     }
+
+    // UserDetails getters
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    // we are returing email as username
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
 }
