@@ -10,10 +10,8 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  static bool isLogged = true;
+  static bool isLogged = false;
   int _selectedIndex = 0;
-
-
 
   void _onItemTapped(int index) {
     setState(() {
@@ -35,80 +33,56 @@ class _HomeState extends State<Home> {
       SettingsPage(),
     ];
 
-    List<Widget> _children = isLogged ? _logged : _notLogged;
-    BottomNavigationBar navigationNotLogged = BottomNavigationBar(
-      items: [
-        BottomNavigationBarItem(
-          icon: Icon(Icons.location_pin),
-          label: 'Mapa kontajnerov',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.account_circle),
-          label: 'Účet',
-        )
-      ],
-      unselectedLabelStyle: TextStyle(
-          fontFamily: 'Poppins',
-          fontSize: 13.0,
-          fontWeight: FontWeight.w400,
-          color: Color.fromRGBO(255, 255, 255, 1.0)),
-      selectedLabelStyle: TextStyle(
-          fontFamily: 'Poppins',
-          fontSize: 13.0,
-          fontWeight: FontWeight.w600,
-          color: Color.fromRGBO(255, 255, 255, 1.0)),
-      unselectedIconTheme:
-      IconThemeData(color: Color.fromRGBO(255, 255, 255, 0.6)),
-      selectedIconTheme:
-      IconThemeData(color: Color.fromRGBO(255, 255, 255, 1.0)),
-      unselectedItemColor: Color.fromRGBO(255, 255, 255, 0.6),
-      backgroundColor: Color.fromRGBO(63, 29, 90, 1.0),
-      currentIndex: _selectedIndex,
-      selectedItemColor: Color.fromRGBO(255, 255, 255, 1),
-      onTap: _onItemTapped,
-    );
+    List<BottomNavigationBarItem> itemsLogged = [
+      BottomNavigationBarItem(
+        icon: Icon(Icons.delete),
+        label: 'Odvozy',
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.location_pin),
+        label: 'Mapa kontajnerov',
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.settings),
+        label: 'Nastavenia',
+      )
+    ];
+     List<BottomNavigationBarItem> itemsNotLogged = [
+         BottomNavigationBarItem(
+           icon: Icon(Icons.location_pin),
+           label: 'Mapa kontajnerov',
+         ),
+         BottomNavigationBarItem(
+           icon: Icon(Icons.account_circle),
+           label: 'Účet',
+         )
+       ];
 
-    BottomNavigationBar navigationLogged = BottomNavigationBar(
-      items: [
-        BottomNavigationBarItem(
-          icon: Icon(Icons.delete),
-          label: 'Odvozy',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.location_pin),
-          label: 'Mapa kontajnerov',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.settings),
-          label: 'Nastavenia',
-        )
-      ],
-      unselectedLabelStyle: TextStyle(
-          fontFamily: 'Poppins',
-          fontSize: 13.0,
-          fontWeight: FontWeight.w400,
-          color: Color.fromRGBO(255, 255, 255, 1.0)),
-      selectedLabelStyle: TextStyle(
-          fontFamily: 'Poppins',
-          fontSize: 13.0,
-          fontWeight: FontWeight.w600,
-          color: Color.fromRGBO(255, 255, 255, 1.0)),
-      unselectedIconTheme:
-      IconThemeData(color: Color.fromRGBO(255, 255, 255, 0.6)),
-      selectedIconTheme:
-      IconThemeData(color: Color.fromRGBO(255, 255, 255, 1.0)),
-      unselectedItemColor: Color.fromRGBO(255, 255, 255, 0.6),
-      backgroundColor: Color.fromRGBO(63, 29, 90, 1.0),
-      currentIndex: _selectedIndex,
-      selectedItemColor: Color.fromRGBO(255, 255, 255, 1),
-      onTap: _onItemTapped,
-    );
 
-    Widget _navigation = isLogged ? navigationLogged : navigationNotLogged;
+    List _items = isLogged ? itemsLogged : itemsNotLogged;
 
     return Scaffold(
-        body: _children[_selectedIndex],
-        bottomNavigationBar: _navigation
+        body: isLogged ? _logged[_selectedIndex] : _notLogged[_selectedIndex],
+        bottomNavigationBar: BottomNavigationBar(
+          items: _items,
+          unselectedLabelStyle: TextStyle(
+              fontFamily: 'Poppins',
+              fontSize: 13.0,
+              fontWeight: FontWeight.w400,
+              color: Color.fromRGBO(255, 255, 255, 1.0)),
+          selectedLabelStyle: TextStyle(
+              fontFamily: 'Poppins',
+              fontSize: 13.0,
+              fontWeight: FontWeight.w600,
+              color: Color.fromRGBO(255, 255, 255, 1.0)),
+          unselectedIconTheme: IconThemeData(color: Color.fromRGBO(255, 255, 255, 0.6)),
+          selectedIconTheme:  IconThemeData(color: Color.fromRGBO(255, 255, 255, 1.0)),
+          unselectedItemColor: Color.fromRGBO(255, 255, 255, 0.6),
+          backgroundColor: Color.fromRGBO(63, 29, 90, 1.0),
+          currentIndex: _selectedIndex,
+          selectedItemColor: Color.fromRGBO(255, 255, 255, 1),
+          onTap: _onItemTapped,
+        )
     );
   }
 }
