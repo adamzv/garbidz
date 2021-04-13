@@ -14,7 +14,9 @@ public class ScheduleController {
 
     private ScheduleRepository scheduleRepository;
 
-    public ScheduleController(ScheduleRepository scheduleRepository) { this.scheduleRepository; }
+    public ScheduleController(ScheduleRepository scheduleRepository) {
+        this.scheduleRepository = scheduleRepository;
+    }
 
     @GetMapping
     public Page<Schedule> getSchedule(@PageableDefault(size = 50) Pageable pageable) {
