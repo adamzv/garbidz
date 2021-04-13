@@ -8,5 +8,6 @@ set foreign_key_checks = 0;
 ALTER TABLE  `user_account`
     MODIFY `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     MODIFY `id_role` BIGINT UNSIGNED NOT NULL,
-    MODIFY `id_address` BIGINT UNSIGNED NOT NULL;
+    MODIFY `id_address` BIGINT UNSIGNED NOT NULL,
+    MODIFY `email` VARCHAR(255) UNIQUE NOT NULL ;
 set foreign_key_checks = 1;
