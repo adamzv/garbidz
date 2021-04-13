@@ -7,6 +7,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Collection;
 
 @Entity(name = "user_account")
@@ -42,6 +44,9 @@ public class User implements UserDetails {
     @ManyToOne
     @JoinColumn(name = "id_address", nullable = false)
     private Address address;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private Set<ContainerUser> containerUser = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -103,6 +108,14 @@ public class User implements UserDetails {
         this.address = address;
     }
 
+    public Set<ContainerUser> getContainerUser() {
+        return containerUser;
+    }
+
+    public void setContainerUser(Set<ContainerUser> containerUser) {
+        this.containerUser = containerUser;
+    }
+
     // UserDetails getters
 
     @Override
@@ -139,5 +152,4 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
-
 }
