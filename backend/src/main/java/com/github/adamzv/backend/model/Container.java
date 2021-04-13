@@ -1,7 +1,5 @@
 package com.github.adamzv.backend.model;
 
-import com.sun.istack.NotNull;
-
 import javax.persistence.*;
 import java.util.Set;
 
@@ -21,13 +19,10 @@ public class Container{
     @JoinColumn(name = "id_type", nullable = false)
     private ContainerType type;
 
-    @NotNull
-    private int number;
-
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL)
     private Set<ContainerSchedule> containerSchedule;
 
-    @OneToMany(mappedBy = " ",cascade = CascadeType.All)
+    @OneToMany(mappedBy = "container",cascade = CascadeType.ALL)
     private Set<ContainerUser> containerUser;
 
     public Long getId() {
@@ -54,14 +49,6 @@ public class Container{
         this.type = type;
     }
 
-    public int getNumber() {
-        return number;
-    }
-
-    public void setNumber(int number) {
-        this.number = number;
-    }
-
     public Set<ContainerSchedule> getContainerSchedule() {
         return containerSchedule;
     }
@@ -84,7 +71,6 @@ public class Container{
                 "id=" + id +
                 ", address=" + address +
                 ", type=" + type +
-                ", number=" + number +
                 ", containerSchedule=" + containerSchedule +
                 ", containerUser=" + containerUser +
                 '}';

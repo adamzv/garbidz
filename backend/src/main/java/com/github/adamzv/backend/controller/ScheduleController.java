@@ -24,7 +24,7 @@ public class ScheduleController {
     }
 
     @GetMapping("/{id}")
-    public Schedule getSchedule(@PathViable Long id) {
+    public Schedule getSchedule(@PathVariable Long id) {
             return scheduleRepository.findById(id)
                     .orElseThrow(() -> new ScheduleNotFoundException(id));
     }
@@ -39,8 +39,9 @@ public class ScheduleController {
     public Schedule updateschedule(@PathVariable Long id, @RequestBody Schedule newSchedule) {
             return scheduleRepository.findById(id)
                     .map(schedule -> {
-                        schedule.setRegion(newSchedule.getDatetime());
-                        return regionRepository.save(schedule);
+                        schedule.setDatetime(newSchedule.getDatetime());
+                        schedule.setContainerSchedule(newSchedule.getContainerSchedule());
+                        return scheduleRepository.save(schedule);
                     })
                     .orElseThrow(() -> new RuntimeException("Schedule with id " + id + " can not be updated!"));
     }

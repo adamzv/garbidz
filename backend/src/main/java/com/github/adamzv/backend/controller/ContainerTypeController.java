@@ -39,9 +39,9 @@ public class ContainerTypeController {
     public ContainerType updateContainerType(@PathVariable Long id, @RequestBody ContainerType newContainerType){
         return containerTypeRepository.findById(id)
                 .map(containerType -> {
-                    containerType.setType(newContainerType.getContainerType());
-                    containerType.setSize(newContainerType.getContainerSize());
-                    return containerTypeRepository.save(containerType)
+                    containerType.setType(newContainerType.getType());
+                    containerType.setSize(newContainerType.getSize());
+                    return containerTypeRepository.save(containerType);
                 })
                 .orElseThrow(() -> new ContainerTypeNotFoundException(id));
     }

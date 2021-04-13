@@ -1,7 +1,6 @@
 package com.github.adamzv.backend.model;
 
 import com.sun.istack.NotNull;
-import java.util.Set;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -38,14 +37,6 @@ public class Schedule{
         this.datetime = datetime;
     }
 
-    public Set<Container> getContainer() {
-        return container;
-    }
-
-    public void setContainer(Set<Container> container) {
-        this.container = container;
-    }
-
     public Set<ContainerSchedule> getContainerSchedule() {
         return containerSchedule;
     }
@@ -59,7 +50,6 @@ public class Schedule{
         return "Schedule{" +
                 "id=" + id +
                 ", datetime=" + datetime +
-                ", container=" + container +
                 '}';
     }
 }

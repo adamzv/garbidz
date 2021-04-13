@@ -9,6 +9,10 @@ import java.util.Set;
 @Table(name = "container_has_schedule")
 public class ContainerSchedule{
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_container")
     private Container container;
@@ -16,6 +20,14 @@ public class ContainerSchedule{
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_schedule")
     private Schedule schedule;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public Container getContainer() {
         return container;
