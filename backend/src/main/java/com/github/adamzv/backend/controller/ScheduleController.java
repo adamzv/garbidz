@@ -30,7 +30,7 @@ public class ScheduleController {
     @PostMapping
     public Schedule newSchedule(@RequestBody Schedule schedule){
             schedule.setId(0L);
-            return scheduleRepository..save(schedule);
+            return scheduleRepository.save(schedule);
     }
 
     @PutMapping("/{id}")
