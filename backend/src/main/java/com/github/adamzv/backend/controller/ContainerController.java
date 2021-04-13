@@ -15,7 +15,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/container")
+@RequestMapping("/containers")
 public class ContainerController {
 
     private ContainerRepository containerRepository;
@@ -29,7 +29,7 @@ public class ContainerController {
     }
 
     @GetMapping
-    public Page<Container> getContainer(@PageableDefault(size = 50) Pageable pageable) {
+    public Page<Container> getContainers(@PageableDefault(size = 50) Pageable pageable) {
         return containerRepository.findAll(pageable);
     }
 

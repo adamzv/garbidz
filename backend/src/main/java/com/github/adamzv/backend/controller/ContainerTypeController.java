@@ -9,7 +9,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/container_type")
+@RequestMapping("/containertypes")
 public class ContainerTypeController {
 
     private ContainerTypeRepository containerTypeRepository;

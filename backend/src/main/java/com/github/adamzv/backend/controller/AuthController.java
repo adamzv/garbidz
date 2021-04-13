@@ -5,6 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.github.adamzv.backend.model.User;
 import com.github.adamzv.backend.model.UserLogin;
+import com.github.adamzv.backend.model.UserToken;
 import com.github.adamzv.backend.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -52,8 +53,16 @@ public class AuthController {
                 .sign(Algorithm.HMAC256(SECRET.getBytes()));
 
         User user = userService.getUserByEmail(login.getUsername());
-        user.getToken().setToken(jwtToken);
-        user.getToken().setRevoked(false);
+
+        if (user.getToken() == null) {
+            UserToken token = new UserToken();
+            token.setToken(jwtToken);
+            token.setRevoked(false);
+            user.setToken(token);
+        } else {
+            user.getToken().setToken(jwtToken);
+            user.getToken().setRevoked(false);
+        }
 
         userService.updateUser(user.getId(), user);
         return ResponseEntity.ok(jwtToken);

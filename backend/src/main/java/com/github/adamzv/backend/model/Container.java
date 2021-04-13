@@ -19,10 +19,10 @@ public class Container{
     @JoinColumn(name = "id_type", nullable = false)
     private ContainerType type;
 
-    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "schedule", cascade = CascadeType.ALL)
     private Set<ContainerSchedule> containerSchedule;
 
-    @OneToMany(mappedBy = "container",cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "container",cascade = CascadeType.ALL)
     private Set<ContainerUser> containerUser;
 
     public Long getId() {

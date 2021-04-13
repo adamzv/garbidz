@@ -3,31 +3,22 @@ package com.github.adamzv.backend.model;
 import com.sun.istack.NotNull;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Set;
 
 @Entity
 @Table(name = "container_has_user")
-public class ContainerUser{
+public class ContainerUser implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "id_container")
     private Container container;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "id_user_account")
+    @Id
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "id_user")
     private User user;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public Container getContainer() {
         return container;

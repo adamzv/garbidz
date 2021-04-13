@@ -10,9 +10,6 @@ public class UserToken {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-//    @OneToOne
-//    private User user;
-
     private String token;
 
     private Boolean revoked;
