@@ -22,10 +22,11 @@ public class Container{
     @JoinColumn(name = "id_type", nullable = false)
     private ContainerType type;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "schedule", cascade = CascadeType.ALL)
+    // TODO same as User <-> Role, check if there is a better way than using EAGER loading
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "schedule", cascade = CascadeType.ALL)
     private Set<ContainerSchedule> containerSchedule;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "container",cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "container",cascade = CascadeType.ALL)
     private Set<ContainerUser> containerUser;
 
     public Long getId() {
