@@ -1,8 +1,8 @@
 CREATE  TABLE IF NOT EXISTS `user_report` (
-     `id` INT NOT NULL AUTO_INCREMENT ,
+     `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT ,
      `message` TEXT NOT NULL ,
      `datetime` DATETIME NOT NULL ,
-     `id_user` INT NOT NULL ,
+     `id_user` BIGINT(20) UNSIGNED NOT NULL ,
      PRIMARY KEY (`id`) ,
      UNIQUE INDEX `id_UNIQUE` (`id` ASC) ,
      INDEX `fk_reports_users_idx` (`id_user` ASC) ,

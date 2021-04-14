@@ -1,7 +1,7 @@
 # table hibernate_sequence
 CREATE TABLE `hibernate_sequence`
 (
-    `next_val` bigint(20) DEFAULT NULL
+    `next_val` BIGINT(20) DEFAULT NULL
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
 
@@ -11,13 +11,12 @@ VALUES (1);
 # table user_role
 CREATE TABLE `user_role`
 (
-    `id`        int(11) NOT NULL,
-    `user_role` varchar(255) DEFAULT NULL
+    `id`        BIGINT(20) UNSIGNED NOT NULL,
+    `user_role` varchar(255) DEFAULT NULL,
+     PRIMARY KEY (`id`),
+     UNIQUE INDEX `id_UNIQUE` (`id` ASC)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
-
-ALTER TABLE `user_role`
-    ADD PRIMARY KEY (`id`);
 
 # added 1 role for testing purposes
 INSERT INTO `user_role` (`id`, `user_role`)
