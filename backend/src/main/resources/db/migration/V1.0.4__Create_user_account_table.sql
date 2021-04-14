@@ -1,13 +1,13 @@
 CREATE TABLE IF NOT EXISTS `user_account` (
-    `id` INT NOT NULL AUTO_INCREMENT ,
+    `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT ,
     `name` VARCHAR(255) NOT NULL ,
     `surname` VARCHAR(255) NOT NULL ,
-    `email` VARCHAR(255) NOT NULL ,
+    `email` VARCHAR(255) NOT NULL  ,
     `password` TEXT NOT NULL ,
-    `id_role` INT NOT NULL ,
-    `id_address` INT NOT NULL ,
+    `id_role` BIGINT(20) UNSIGNED NOT NULL ,
+    `id_address` BIGINT(20) UNSIGNED NOT NULL ,
      PRIMARY KEY (`id`) ,
-     UNIQUE INDEX `id_UNIQUE` (`id` ASC) ,
+     UNIQUE INDEX `id_UNIQUE` (`id`, `email`  ASC) ,
      INDEX `fk_users_roles_idx` (`id_role` ASC) ,
      CONSTRAINT `fk_users_roles`
         FOREIGN KEY (`id_role`)

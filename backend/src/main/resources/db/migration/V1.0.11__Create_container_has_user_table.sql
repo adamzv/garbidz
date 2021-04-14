@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS `container_has_user`
 (
-    `id_container` INT NOT NULL,
-    `id_user` INT NOT NULL,
+    `id_container` BIGINT(20) UNSIGNED NOT NULL,
+    `id_user` BIGINT(20) UNSIGNED NOT NULL,
     INDEX `fk_container_user_idx` (`id_container` ASC),
     CONSTRAINT `fk_container_user`
         FOREIGN KEY(`id_container`)
