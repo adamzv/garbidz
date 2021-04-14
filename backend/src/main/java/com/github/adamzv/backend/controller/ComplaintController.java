@@ -1,0 +1,105 @@
+package com.github.adamzv.backend.controller;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.adamzv.backend.exception.AddressNotFoundException;
+import com.github.adamzv.backend.exception.ComplaintNotFoundException;
+import com.github.adamzv.backend.exception.UserNotFoundException;
+import com.github.adamzv.backend.helpers.ComplaintHelper;
+import com.github.adamzv.backend.model.Address;
+import com.github.adamzv.backend.model.Complaint;
+import com.github.adamzv.backend.model.User;
+import com.github.adamzv.backend.repository.AddressRepository;
+import com.github.adamzv.backend.repository.ComplaintRepository;
+import com.github.adamzv.backend.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+
+@RestController
+@RequestMapping("/complaints")
+public class ComplaintController {
+
+    private ComplaintRepository complaintRepository;
+    private UserRepository userRepository;
+    private AddressRepository addressRepository;
+
+    // use constructor base injection since using @Autowired is not recommended
+    public ComplaintController(ComplaintRepository complaintRepository, UserRepository userRepository, AddressRepository addressRepository) {
+        this.complaintRepository = complaintRepository;
+        this.userRepository = userRepository;
+        this.addressRepository = addressRepository;
+    }
+
+    @GetMapping
+    public Page<Complaint> getComplaints(@PageableDefault(size = 9) Pageable pageable) {
+        return complaintRepository.findAll(pageable);
+    }
+
+    @GetMapping("/{id}")
+    public Complaint getComplaint(@PathVariable Long id) {
+        return complaintRepository.findById(id)
+                .orElseThrow(() -> new ComplaintNotFoundException(id));
+    }
+
+    @PostMapping
+    public Complaint newComplaint(@RequestParam("complaint") String complaintRequest, @RequestParam(value = "file", required = false) MultipartFile multipartImage) throws Exception {
+
+        ObjectMapper mapper = new ObjectMapper();
+        ComplaintHelper complaintObject = mapper.readValue(complaintRequest, ComplaintHelper.class);
+
+        Complaint complaint = new Complaint();
+
+        complaint.setId(0L);
+
+        User user = userRepository.findById(complaintObject.getUserId())
+                .orElseThrow(() -> new UserNotFoundException(complaintObject.getUserId()));
+        complaint.setUser(user);
+
+        Address address = addressRepository.findById(complaintObject.getAddressId())
+                .orElseThrow(() -> new AddressNotFoundException(complaintObject.getAddressId()));
+        complaint.setAddress(address);
+
+        complaint.setDatetime(complaintObject.getDatetime());
+        complaint.setText(complaintObject.getText());
+        if (multipartImage != null) {
+            complaint.setImage(multipartImage.getBytes());
+        }
+        return complaintRepository.save(complaint);
+    }
+
+    @PutMapping("/{id}")
+    public Complaint updateComplaint(@PathVariable Long id,
+                                     @RequestParam("complaint") String newComplaint,
+                                     @RequestParam(value = "file", required = false) MultipartFile multipartImage) throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        ComplaintHelper newComplaintObject = mapper.readValue(newComplaint, ComplaintHelper.class);
+
+        return complaintRepository.findById(id)
+                .map(complaint -> {
+                    complaint.setDatetime(newComplaintObject.getDatetime());
+                    complaint.setText(newComplaintObject.getText());
+                    if (multipartImage != null) {
+                        try {
+                            complaint.setImage(multipartImage.getBytes());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    complaint.setUser(userRepository.findById(newComplaintObject.getUserId())
+                            .orElseThrow(() -> new UserNotFoundException(newComplaintObject.getUserId())));
+                    complaint.setAddress(addressRepository.findById(newComplaintObject.getAddressId())
+                            .orElseThrow(() -> new AddressNotFoundException(newComplaintObject.getAddressId())));
+                    return complaintRepository.save(complaint);
+                })
+                .orElseThrow(() -> new ComplaintNotFoundException(id));
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteComplaint(@PathVariable Long id) {
+        complaintRepository.deleteById(id);
+    }
+}
