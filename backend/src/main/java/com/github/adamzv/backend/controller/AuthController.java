@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.github.adamzv.backend.security.configuration.SecurityConfigurationConstants.*;
 
@@ -42,7 +44,7 @@ public class AuthController {
 
     @PostMapping("/signin")
     // TODO: validation
-    public ResponseEntity<String> signinUser(@RequestBody UserLogin login) {
+    public ResponseEntity<Map> signinUser(@RequestBody UserLogin login) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(login.getUsername(), login.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -65,7 +67,12 @@ public class AuthController {
         }
 
         userService.updateUser(user.getId(), user);
-        return ResponseEntity.ok(jwtToken);
+
+        // added temporary HashMap to create a response object
+        return ResponseEntity.ok(Map.of("token", jwtToken,
+                "id", String.valueOf(user.getId()),
+                "username", user.getUsername(),
+                "roles", user.getRoles()));
     }
 
     @PostMapping("/logout")
