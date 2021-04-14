@@ -26,7 +26,7 @@ public class RoleController {
     @GetMapping("/{id}")
     public Role getRole(@PathVariable Long id) {
         return roleRepository.findById(id)
-                .orElseThrow(() -> new RoleNotFoundException(id));
+                .orElseThrow(() -> new RoleNotFoundException());
     }
 
     @PostMapping

@@ -53,18 +53,19 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         if (token != null) {
             try {
                 token = token.replace(TOKEN_PREFIX, "");
-                String user = JWT.require(Algorithm.HMAC256(SECRET.getBytes()))
+                String userFromToken = JWT.require(Algorithm.HMAC256(SECRET.getBytes()))
                         .build()
                         .verify(token.replace(TOKEN_PREFIX, ""))
                         .getSubject();
 
-                if (user != null) {
+                if (userFromToken != null) {
+                    User user = (User) userService.loadUserByUsername(userFromToken);
 
-                    // check if token is in blacklist
-                    UserToken userToken = ((User) userService.loadUserByUsername(user)).getToken();
+                    // check if token is not in blacklist
+                    UserToken userToken = user.getToken();
                     if (!userToken.getRevoked()) {
                         if (token.equals(userToken.getToken())) {
-                            return new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
+                            return new UsernamePasswordAuthenticationToken(user.getUsername(), null, user.getAuthorities());
                         }
                     } else {
                         return null;

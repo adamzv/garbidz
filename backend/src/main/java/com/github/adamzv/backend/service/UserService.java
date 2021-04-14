@@ -4,6 +4,7 @@ import com.github.adamzv.backend.exception.AddressNotFoundException;
 import com.github.adamzv.backend.exception.RoleNotFoundException;
 import com.github.adamzv.backend.exception.UserNotFoundException;
 import com.github.adamzv.backend.model.Address;
+import com.github.adamzv.backend.model.ERole;
 import com.github.adamzv.backend.model.Role;
 import com.github.adamzv.backend.model.User;
 import com.github.adamzv.backend.repository.AddressRepository;
@@ -16,6 +17,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 public class UserService {
@@ -37,14 +41,41 @@ public class UserService {
 
     // TODO: service method validations
     // TODO: refactor everything to return ResponseEntity
+    // TODO: create request entity for registration
     public User createUser(User user) {
         user.setId(0L);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         // set user role
-        Role role = roleRepository.findById(user.getRole().getId())
-                .orElseThrow(() -> new RoleNotFoundException(user.getRole().getId()));
-        user.setRole(role);
+        Set<Role> reqRoles = user.getRoles();
+        Set<Role> roles = new HashSet<>();
+        if (reqRoles == null) {
+            Role role = roleRepository.findByRole(ERole.ROLE_USER)
+                    .orElseThrow(() -> new RoleNotFoundException());
+            roles.add(role);
+        } else {
+            reqRoles.forEach(role -> {
+                switch (role.getRole().name()) {
+                    case "ROLE_ADMIN":
+                        Role adminRole = roleRepository.findByRole(ERole.ROLE_ADMIN)
+                                .orElseThrow(() -> new RoleNotFoundException());
+                        roles.add(adminRole);
+                        break;
+                    case "ROLE_MODERATOR":
+                        Role moderatorRole = roleRepository.findByRole(ERole.ROLE_MODERATOR)
+                                .orElseThrow(() -> new RoleNotFoundException());
+                        roles.add(moderatorRole);
+                        break;
+                    default:
+                        Role userRole = roleRepository.findByRole(ERole.ROLE_USER)
+                                .orElseThrow(() -> new RoleNotFoundException());
+                        roles.add(userRole);
+                        break;
+                }
+            });
+        }
+
+        user.setRoles(roles);
 
         // set user address
         Address address = addressRepository.findById(user.getAddress().getId())
@@ -62,8 +93,11 @@ public class UserService {
                     user.setEmail(newUser.getEmail());
                     user.setPassword(newUser.getPassword());
                     user.setToken(newUser.getToken());
-                    user.setRole(roleRepository.findById(newUser.getRole().getId())
-                            .orElseThrow(() -> new RoleNotFoundException(newUser.getRole().getId())));
+                    // TODO: update setting roles
+                    // maybe dont change role and add a separate method for adding roles
+
+//                    user.setRole(roleRepository.findById(newUser.getRole().getId())
+//                            .orElseThrow(() -> new RoleNotFoundException(newUser.getRole().getId())));
                     user.setAddress(addressRepository.findById(newUser.getAddress().getId())
                             .orElseThrow(() -> new AddressNotFoundException(newUser.getAddress().getId())));
                     return userRepository.save(user);
