@@ -40,9 +40,8 @@ public class User implements UserDetails {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private UserToken token;
 
-//    @ManyToOne
-//    @JoinColumn(name = "id_role", nullable = false)
-    @ManyToMany(fetch = FetchType.LAZY)
+    // TODO: solve problem with lazy initialization
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_has_role",
     joinColumns = @JoinColumn(name = "id_user"),
     inverseJoinColumns = @JoinColumn(name = "id_role"))

@@ -71,8 +71,7 @@ public class AuthController {
         // added temporary HashMap to create a response object
         return ResponseEntity.ok(Map.of("token", jwtToken,
                 "id", String.valueOf(user.getId()),
-                "username", user.getUsername(),
-                "roles", user.getRoles()));
+                "username", user.getUsername()));
     }
 
     @PostMapping("/logout")
