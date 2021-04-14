@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS `container_has_schedule`
 (
-    `id_container` INT NOT NULL,
-    `id_schedule` INT NOT NULL,
+    `id_container` BIGINT(20) UNSIGNED NOT NULL,
+    `id_schedule` BIGINT(20) UNSIGNED NOT NULL,
     INDEX `fk_container_schedule_idx` (`id_container` ASC),
     CONSTRAINT `fk_container_schedule`
         FOREIGN KEY(`id_container`)

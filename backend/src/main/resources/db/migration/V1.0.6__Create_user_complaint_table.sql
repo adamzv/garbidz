@@ -1,10 +1,10 @@
 CREATE  TABLE IF NOT EXISTS `user_complaint` (
-     `id` INT NOT NULL AUTO_INCREMENT ,
+     `id`BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT ,
      `datetime` DATETIME NOT NULL ,
      `image` BLOB ,
      `text` TEXT NOT NULL ,
-     `id_user` INT NOT NULL ,
-     `id_address` INT NOT NULL ,
+     `id_user` BIGINT(20) UNSIGNED NOT NULL ,
+     `id_address` BIGINT(20) UNSIGNED NOT NULL ,
      PRIMARY KEY (`id`) ,
      UNIQUE INDEX `id_UNIQUE` (`id` ASC) ,
      INDEX `fk_complaints_users_idx` (`id_user` ASC) ,
