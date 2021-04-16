@@ -3,6 +3,7 @@ package com.github.adamzv.backend.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sun.istack.NotNull;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -35,6 +36,8 @@ public class User implements UserDetails {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
+    private boolean enabled;
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_token_id")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
@@ -53,6 +56,11 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<ContainerUser> containerUser = new HashSet<>();
+
+    public User() {
+        super();
+        this.enabled = false;
+    }
 
     public Long getId() {
         return id;
@@ -114,6 +122,10 @@ public class User implements UserDetails {
         this.address = address;
     }
 
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
     public Set<ContainerUser> getContainerUser() {
         return containerUser;
     }
@@ -161,6 +173,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return enabled;
     }
 }

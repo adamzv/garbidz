@@ -10,7 +10,6 @@ import com.github.adamzv.backend.model.User;
 import com.github.adamzv.backend.repository.AddressRepository;
 import com.github.adamzv.backend.repository.RoleRepository;
 import com.github.adamzv.backend.repository.UserRepository;
-import com.github.adamzv.backend.security.service.UserDetailsServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -27,10 +26,10 @@ public class UserService {
     private UserRepository userRepository;
     private RoleRepository roleRepository;
     private AddressRepository addressRepository;
+
     private PasswordEncoder passwordEncoder;
 
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
-
 
     public UserService(UserRepository userRepository, RoleRepository roleRepository, AddressRepository addressRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -55,13 +54,13 @@ public class UserService {
             roles.add(role);
         } else {
             reqRoles.forEach(role -> {
-                switch (role.getRole().name()) {
-                    case "ROLE_ADMIN":
+                switch (role.getRole()) {
+                    case ROLE_ADMIN:
                         Role adminRole = roleRepository.findByRole(ERole.ROLE_ADMIN)
                                 .orElseThrow(() -> new RoleNotFoundException());
                         roles.add(adminRole);
                         break;
-                    case "ROLE_MODERATOR":
+                    case ROLE_MODERATOR:
                         Role moderatorRole = roleRepository.findByRole(ERole.ROLE_MODERATOR)
                                 .orElseThrow(() -> new RoleNotFoundException());
                         roles.add(moderatorRole);
@@ -74,14 +73,12 @@ public class UserService {
                 }
             });
         }
-
         user.setRoles(roles);
 
         // set user address
         Address address = addressRepository.findById(user.getAddress().getId())
                 .orElseThrow(() -> new AddressNotFoundException(user.getAddress().getId()));
         user.setAddress(address);
-
         return userRepository.save(user);
     }
 
@@ -96,8 +93,6 @@ public class UserService {
                     // TODO: update setting roles
                     // maybe dont change role and add a separate method for adding roles
 
-//                    user.setRole(roleRepository.findById(newUser.getRole().getId())
-//                            .orElseThrow(() -> new RoleNotFoundException(newUser.getRole().getId())));
                     user.setAddress(addressRepository.findById(newUser.getAddress().getId())
                             .orElseThrow(() -> new AddressNotFoundException(newUser.getAddress().getId())));
                     return userRepository.save(user);
@@ -121,4 +116,5 @@ public class UserService {
     public Page<User> getUsers(Pageable pageable) {
         return userRepository.findAll(pageable);
     }
+
 }
