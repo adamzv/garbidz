@@ -58,6 +58,7 @@ public class ContainerController {
     public Container updateContainer(@PathVariable Long id, @RequestBody Container newContainer) {
         return containerRepository.findById(id)
                 .map(container -> {
+                    container.setGarbageType(newContainer.getGarbageType());
                     container.setAddress(addressRepository.findById(newContainer.getAddress().getId())
                             .orElseThrow(() -> new AddressNotFoundException(newContainer.getAddress().getId())));
                     container.setType(containerTypeRepository.findById(newContainer.getType().getId())

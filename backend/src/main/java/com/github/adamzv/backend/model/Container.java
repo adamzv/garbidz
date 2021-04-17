@@ -11,6 +11,9 @@ public class Container{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JoinColumn(name = "garbage_type", nullable = false)
+    private String garbageType;
+
     @ManyToOne
     @JoinColumn(name = "id_address", nullable = false)
     private Address address;
@@ -31,6 +34,14 @@ public class Container{
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getGarbageType() {
+        return garbageType;
+    }
+
+    public void setGarbageType(String garbageType) {
+        this.garbageType = garbageType;
     }
 
     public Address getAddress() {
