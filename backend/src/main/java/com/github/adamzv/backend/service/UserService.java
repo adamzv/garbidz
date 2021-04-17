@@ -3,11 +3,9 @@ package com.github.adamzv.backend.service;
 import com.github.adamzv.backend.exception.AddressNotFoundException;
 import com.github.adamzv.backend.exception.RoleNotFoundException;
 import com.github.adamzv.backend.exception.UserNotFoundException;
-import com.github.adamzv.backend.model.Address;
-import com.github.adamzv.backend.model.ERole;
-import com.github.adamzv.backend.model.Role;
-import com.github.adamzv.backend.model.User;
+import com.github.adamzv.backend.model.*;
 import com.github.adamzv.backend.repository.AddressRepository;
+import com.github.adamzv.backend.repository.ConfirmationTokenRepository;
 import com.github.adamzv.backend.repository.RoleRepository;
 import com.github.adamzv.backend.repository.UserRepository;
 import org.slf4j.Logger;
@@ -26,15 +24,17 @@ public class UserService {
     private UserRepository userRepository;
     private RoleRepository roleRepository;
     private AddressRepository addressRepository;
+    private ConfirmationTokenRepository confirmationTokenRepository;
 
     private PasswordEncoder passwordEncoder;
 
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
-    public UserService(UserRepository userRepository, RoleRepository roleRepository, AddressRepository addressRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, RoleRepository roleRepository, AddressRepository addressRepository, ConfirmationTokenRepository confirmationTokenRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.addressRepository = addressRepository;
+        this.confirmationTokenRepository = confirmationTokenRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -115,6 +115,18 @@ public class UserService {
 
     public Page<User> getUsers(Pageable pageable) {
         return userRepository.findAll(pageable);
+    }
+
+    public User confirmUser(String token) {
+        ConfirmationToken cToken = confirmationTokenRepository.findByToken(token).orElseThrow(() -> new RuntimeException("Token not found"));
+
+        if (!cToken.getUser().isEnabled()) {
+            User user = getUserByEmail(cToken.getUser().getEmail());
+            user.setEnabled(true);
+            return userRepository.save(user);
+        } else {
+            return cToken.getUser();
+        }
     }
 
 }
