@@ -42,8 +42,13 @@ public class UserService {
     // TODO: refactor everything to return ResponseEntity
     // TODO: create request entity for registration
     public User createUser(User user) {
+        if (userRepository.findUserByEmail(user.getEmail()) != null) {
+            throw new RuntimeException("Email is already used.");
+        }
+
         user.setId(0L);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setEnabled(false);
 
         // set user role
         Set<Role> reqRoles = user.getRoles();
