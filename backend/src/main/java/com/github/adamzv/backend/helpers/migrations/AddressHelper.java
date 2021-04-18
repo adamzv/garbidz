@@ -33,10 +33,12 @@ public class AddressHelper {
                 while (rows.next()) {
                     address.setId(rows.getLong(1));
                     address.setAddress(rows.getString(2));
+                    address.setLat(rows.getString(3));
+                    address.setLon(rows.getString(4));
 
                     // create town object with id and insert it into the address
                     Town town = new Town();
-                    town.setId(rows.getLong(3));
+                    town.setId(rows.getLong(5));
                     address.setTown(town);
                 }
 
@@ -53,9 +55,9 @@ public class AddressHelper {
     private Address saveAddress(Address addressNew) throws Exception {
         try (Statement update = context.getConnection().createStatement()) {
             update.execute("INSERT INTO address VALUES (" + addressNew.getId() + ", '"
-                    + addressNew.getAddress() + "', " + addressNew.getTown().getId() + " )", Statement.RETURN_GENERATED_KEYS);
+                    + addressNew.getAddress() + "', '" + addressNew.getLat() + "', '"
+                    + addressNew.getLon() + "', " + addressNew.getTown().getId() + " )", Statement.RETURN_GENERATED_KEYS);
 
-            // we need to add id of newly created address to the object
             ResultSet rs = update.getGeneratedKeys();
             rs.next();
             addressNew.setId(rs.getLong(1));
