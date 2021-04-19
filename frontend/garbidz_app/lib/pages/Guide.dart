@@ -1,5 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:http/http.dart' as http;
+import 'package:garbidz_app/components/AdressGuide.dart';
+import 'package:garbidz_app/components/AdressGuide.dart';
+import 'dart:convert';
 
 class Guide extends StatefulWidget {
   @override
@@ -127,13 +132,33 @@ class _GuidePageState extends State<Guide> {
                                 ),
                               ),
                               SizedBox(height: 20.0),
-                              TextField(
-                                decoration: InputDecoration(
-                                    border: UnderlineInputBorder(),
-                                    labelText: 'Zadajte adresu',
-                                    prefixIcon: Icon(Icons.search),
-                                    hintText: 'Adresa...'),
-                              ),
+                              TypeAheadField<AdressGuide>(
+                                textFieldConfiguration: TextFieldConfiguration(
+                                    autofocus: true,
+                                    style: DefaultTextStyle.of(context).style.copyWith(
+                                      color: Colors.black,
+                                      fontSize: 16.0,
+                                      fontFamily: 'Poppins',
+                                    ),
+                                    decoration: InputDecoration(
+                                      hintText: "Nájdite svoju lokalitu..."
+                                    )
+                                ),
+                                suggestionsCallback: AddressApi.getAddressSuggestions,
+                                itemBuilder: (context, AdressGuide suggestion) {
+                                  final address = suggestion;
+                                  return Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: ListTile(
+                                      leading: Icon(Icons.location_pin),
+                                      title: Text(address.name),
+                                    ),
+                                  );
+                                },
+                                onSuggestionSelected: (suggestion) {
+                                  print("ID: "+suggestion.id.toString()+" Name: "+suggestion.name);
+                                },
+                              )
                             ],
                           ),
                         ),
