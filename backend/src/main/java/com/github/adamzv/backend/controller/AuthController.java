@@ -5,9 +5,12 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.github.adamzv.backend.event.OnRegistrationCompleteEvent;
 import com.github.adamzv.backend.model.User;
-import com.github.adamzv.backend.model.UserLogin;
+import com.github.adamzv.backend.model.dto.UserFinishDTO;
+import com.github.adamzv.backend.model.dto.UserLoginDTO;
 import com.github.adamzv.backend.model.UserToken;
+import com.github.adamzv.backend.model.dto.UserRegistrationDTO;
 import com.github.adamzv.backend.service.UserService;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -38,8 +41,8 @@ public class AuthController {
 
     // TODO: validation
     @PostMapping("/signup")
-    public ResponseEntity<User> signupUser(@RequestBody User user) {
-        user = userService.createUser(user);
+    public ResponseEntity<User> signupUser(@RequestBody UserRegistrationDTO userDTO) {
+        User user = userService.createUser(userDTO);
         eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user));
 
         return ResponseEntity.ok(user);
@@ -52,7 +55,7 @@ public class AuthController {
 
     @PostMapping("/signin")
     // TODO: validation
-    public ResponseEntity<Map> signinUser(@RequestBody UserLogin login) {
+    public ResponseEntity<User> signinUser(@RequestBody UserLoginDTO login) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(login.getUsername(), login.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -74,12 +77,12 @@ public class AuthController {
             user.getToken().setRevoked(false);
         }
 
-        userService.updateUser(user.getId(), user);
+        return ResponseEntity.ok(userService.updateUserToken(user.getId(), user));
+    }
 
-        // added temporary HashMap to create a response object
-        return ResponseEntity.ok(Map.of("token", jwtToken,
-                "id", String.valueOf(user.getId()),
-                "username", user.getUsername()));
+    @PostMapping("/finish")
+    public ResponseEntity<User> finishUserRegistration(@RequestBody UserFinishDTO userDTO) {
+        return ResponseEntity.ok(userService.finishUserRegistration(userDTO, SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString()));
     }
 
     @PostMapping("/logout")

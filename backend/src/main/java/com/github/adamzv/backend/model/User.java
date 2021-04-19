@@ -51,7 +51,7 @@ public class User implements UserDetails {
     private Set<Role> roles = new HashSet<>();
 
     @ManyToOne
-    @JoinColumn(name = "id_address", nullable = false)
+    @JoinColumn(name = "id_address")
     private Address address;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
@@ -174,5 +174,21 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return enabled;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", enabled=" + enabled +
+                ", token=" + token +
+                ", roles=" + roles +
+                ", address=" + address +
+                ", containerUser=" + containerUser +
+                '}';
     }
 }

@@ -20,6 +20,14 @@ public class ContainerUser implements Serializable {
     @JoinColumn(name = "id_user")
     private User user;
 
+    public ContainerUser() {
+    }
+
+    public ContainerUser(Container container, User user) {
+        this.container = container;
+        this.user = user;
+    }
+
     public Container getContainer() {
         return container;
     }
