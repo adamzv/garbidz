@@ -17,8 +17,3 @@ CREATE TABLE `user_role`
      UNIQUE INDEX `id_UNIQUE` (`id` ASC)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
-
-# added 1 role for testing purposes
-INSERT INTO `user_role` (`id`, `user_role`)
-VALUES (1, 'user');
-

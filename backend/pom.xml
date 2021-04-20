@@ -11,7 +11,7 @@
     </parent>
     <groupId>com.github.adamzv</groupId>
     <artifactId>backend</artifactId>
-    <version>0.0.2</version>
+    <version>0.2.0</version>
     <name>backend</name>
     <description>Spring backend for Garbidž project</description>
     <properties>
@@ -76,6 +76,12 @@
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.12.0</version>
+        </dependency>
+
     </dependencies>
 
     <build>
