@@ -57,7 +57,6 @@ public class TownController {
         return townRepository.findById(id)
                 .map(town -> {
                     town.setTown(newTown.getTown());
-                    town.setZipcode(newTown.getZipcode());
                     town.setRegion(regionRepository.findById(newTown.getRegion().getId()).get());
                     return townRepository.save(town);
                 })

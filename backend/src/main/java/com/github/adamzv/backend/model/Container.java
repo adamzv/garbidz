@@ -1,5 +1,7 @@
 package com.github.adamzv.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import java.util.Set;
 
@@ -11,6 +13,9 @@ public class Container{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JoinColumn(name = "garbage_type", nullable = false)
+    private String garbageType;
+
     @ManyToOne
     @JoinColumn(name = "id_address", nullable = false)
     private Address address;
@@ -19,10 +24,11 @@ public class Container{
     @JoinColumn(name = "id_type", nullable = false)
     private ContainerType type;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "schedule", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "schedule", cascade = CascadeType.ALL)
     private Set<ContainerSchedule> containerSchedule;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "container",cascade = CascadeType.ALL)
+    @JsonBackReference(value = "container-user")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "container",cascade = CascadeType.ALL)
     private Set<ContainerUser> containerUser;
 
     public Long getId() {
@@ -31,6 +37,14 @@ public class Container{
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getGarbageType() {
+        return garbageType;
+    }
+
+    public void setGarbageType(String garbageType) {
+        this.garbageType = garbageType;
     }
 
     public Address getAddress() {

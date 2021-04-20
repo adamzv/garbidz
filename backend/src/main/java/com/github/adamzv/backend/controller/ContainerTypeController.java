@@ -40,7 +40,6 @@ public class ContainerTypeController {
         return containerTypeRepository.findById(id)
                 .map(containerType -> {
                     containerType.setType(newContainerType.getType());
-                    containerType.setSize(newContainerType.getSize());
                     return containerTypeRepository.save(containerType);
                 })
                 .orElseThrow(() -> new ContainerTypeNotFoundException(id));

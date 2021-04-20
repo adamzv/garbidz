@@ -3,22 +3,19 @@ package com.github.adamzv.backend.model;
 import com.sun.istack.NotNull;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "container_type")
-public class ContainerType{
+public class ContainerType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length=255)
+    @Column(length = 255)
     @NotNull
     private String type;
-
-    @Column(length=30)
-    @NotNull
-    private String size;
 
     public Long getId() {
         return id;
@@ -36,20 +33,24 @@ public class ContainerType{
         this.type = type;
     }
 
-    public String getSize() {
-        return size;
-    }
-
-    public void setSize(String size) {
-        this.size = size;
-    }
-
     @Override
     public String toString() {
         return "ContainerType{" +
                 "id=" + id +
                 ", type='" + type + '\'' +
-                ", size='" + size + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ContainerType that = (ContainerType) o;
+        return id.equals(that.id) && type.equals(that.type);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, type);
     }
 }

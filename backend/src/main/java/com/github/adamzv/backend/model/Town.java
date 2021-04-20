@@ -15,10 +15,6 @@ public class Town {
     @NotNull
     private String town;
 
-    @Column(length = 5)
-    @NotNull
-    private String zipcode;
-
     // problems with circular dependencies were solved by using unidirectional mapping
     @ManyToOne
     @JoinColumn(name = "id_region", nullable = false)
@@ -40,14 +36,6 @@ public class Town {
         this.town = town;
     }
 
-    public String getZipcode() {
-        return zipcode;
-    }
-
-    public void setZipcode(String zipcode) {
-        this.zipcode = zipcode;
-    }
-
     public Region getRegion() {
         return region;
     }
@@ -61,7 +49,6 @@ public class Town {
         return "Town{" +
                 "id=" + id +
                 ", town='" + town + '\'' +
-                ", zipcode='" + zipcode + '\'' +
                 ", region=" + region +
                 '}';
     }
