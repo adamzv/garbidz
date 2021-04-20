@@ -1,23 +1,26 @@
 package com.github.adamzv.backend.model;
 
-import com.sun.istack.NotNull;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Set;
 
 @Entity
 @Table(name = "container_has_user")
 public class ContainerUser implements Serializable {
 
-    @Id
+    @Id()
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonBackReference
+    private Long id;
+
     @ManyToOne(optional = false)
     @JoinColumn(name = "id_container")
     private Container container;
 
-    @Id
     @ManyToOne(optional = false)
     @JoinColumn(name = "id_user")
+    @JsonBackReference
     private User user;
 
     public ContainerUser() {
@@ -26,6 +29,14 @@ public class ContainerUser implements Serializable {
     public ContainerUser(Container container, User user) {
         this.container = container;
         this.user = user;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Container getContainer() {

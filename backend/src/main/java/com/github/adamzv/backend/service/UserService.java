@@ -27,23 +27,27 @@ public class UserService {
     private AddressRepository addressRepository;
     private ContainerRepository containerRepository;
     private ConfirmationTokenRepository confirmationTokenRepository;
+    private ContainerUserRepository containerUserRepository;
+
 
     private PasswordEncoder passwordEncoder;
 
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
-    public UserService(UserRepository userRepository, RoleRepository roleRepository, AddressRepository addressRepository, ContainerRepository containerRepository, ConfirmationTokenRepository confirmationTokenRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, RoleRepository roleRepository, AddressRepository addressRepository,
+                       ContainerRepository containerRepository, ConfirmationTokenRepository confirmationTokenRepository,
+                       ContainerUserRepository containerUserRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.addressRepository = addressRepository;
         this.containerRepository = containerRepository;
         this.confirmationTokenRepository = confirmationTokenRepository;
+        this.containerUserRepository = containerUserRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
     // TODO: service method validations
     // TODO: refactor everything to return ResponseEntity
-    // TODO: create request entity for registration
     public User createUser(UserRegistrationDTO userDTO) {
         if (userRepository.findUserByEmail(userDTO.getEmail()) != null) {
             throw new RuntimeException("Email is already used.");
@@ -83,14 +87,17 @@ public class UserService {
                 .contains(container.getType()))
                 .collect(Collectors.toSet());
 
-        // TODO: test if we are setting containers correctly and if these changes are correctly saved
         Set<ContainerUser> set = userContainers.stream()
                 .map(container -> new ContainerUser(container, user))
                 .collect(Collectors.toSet());
-        logger.info(set.toString());
         user.setContainerUser(set);
-        logger.info(user.toString());
-        return userRepository.save(user);
+        set.forEach(s -> containerUserRepository.save(s));
+        return user;
+    }
+
+    public User upgradeRole(Long id, ERole role) {
+        // TODO: update setting roles
+        return null;
     }
 
     public User updateUser(Long id, User newUser) {
@@ -101,8 +108,6 @@ public class UserService {
                     user.setEmail(newUser.getEmail());
                     user.setPassword(newUser.getPassword());
                     user.setToken(newUser.getToken());
-                    // TODO: update setting roles
-                    // maybe dont change role and add a separate method for adding roles
 
                     user.setAddress(addressRepository.findById(newUser.getAddress().getId())
                             .orElseThrow(() -> new AddressNotFoundException(newUser.getAddress().getId())));

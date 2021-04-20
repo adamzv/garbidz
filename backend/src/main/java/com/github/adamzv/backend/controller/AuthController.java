@@ -5,12 +5,11 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.github.adamzv.backend.event.OnRegistrationCompleteEvent;
 import com.github.adamzv.backend.model.User;
+import com.github.adamzv.backend.model.UserToken;
 import com.github.adamzv.backend.model.dto.UserFinishDTO;
 import com.github.adamzv.backend.model.dto.UserLoginDTO;
-import com.github.adamzv.backend.model.UserToken;
 import com.github.adamzv.backend.model.dto.UserRegistrationDTO;
 import com.github.adamzv.backend.service.UserService;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
-import java.util.Map;
 
 import static com.github.adamzv.backend.security.configuration.SecurityConfigurationConstants.*;
 

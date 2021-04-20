@@ -42,11 +42,7 @@ public class RoleController {
                     role.setRole(newRole.getRole());
                     return roleRepository.save(role);
                 })
-                // TODO: use orElseThrow instead of creating a new role
-                .orElseGet(() -> {
-                    newRole.setId(id);
-                    return roleRepository.save(newRole);
-                });
+                .orElseThrow(() -> new RoleNotFoundException());
     }
 
     @DeleteMapping("/{id}")

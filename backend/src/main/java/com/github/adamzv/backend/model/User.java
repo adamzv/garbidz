@@ -1,18 +1,17 @@
 package com.github.adamzv.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sun.istack.NotNull;
-import org.hibernate.annotations.ColumnDefault;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Collection;
 import java.util.stream.Collectors;
 
 @Entity(name = "user_account")
@@ -40,10 +39,8 @@ public class User implements UserDetails {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_token_id")
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private UserToken token;
 
-    // TODO: solve problem with lazy initialization
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_has_role",
     joinColumns = @JoinColumn(name = "id_user"),
@@ -54,7 +51,8 @@ public class User implements UserDetails {
     @JoinColumn(name = "id_address")
     private Address address;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
     private Set<ContainerUser> containerUser = new HashSet<>();
 
     public User() {

@@ -1,5 +1,7 @@
 package com.github.adamzv.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import java.util.Set;
 
@@ -22,10 +24,10 @@ public class Container{
     @JoinColumn(name = "id_type", nullable = false)
     private ContainerType type;
 
-    // TODO same as User <-> Role, check if there is a better way than using EAGER loading
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "schedule", cascade = CascadeType.ALL)
     private Set<ContainerSchedule> containerSchedule;
 
+    @JsonBackReference
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "container",cascade = CascadeType.ALL)
     private Set<ContainerUser> containerUser;
 
