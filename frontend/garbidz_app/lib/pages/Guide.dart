@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:http/http.dart' as http;
 import 'package:garbidz_app/components/AdressGuide.dart';
-import 'package:garbidz_app/components/AdressGuide.dart';
-import 'dart:convert';
 
 class Guide extends StatefulWidget {
   @override
@@ -513,7 +511,8 @@ class _GuidePageState extends State<Guide> {
             fontFamily: 'Poppins',
             fontSize: 13.0,
             fontWeight: FontWeight.w400,
-            color: Color.fromRGBO(255, 255, 255, 1.0)),
+            color: Color.fromRGBO(255, 255, 255, 1.0)
+        ),
         selectedLabelStyle: TextStyle(
             fontFamily: 'Poppins',
             fontSize: 13.0,
