@@ -3,6 +3,7 @@ package com.github.adamzv.backend.model;
 import com.sun.istack.NotNull;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "container_type")
@@ -38,5 +39,18 @@ public class ContainerType {
                 "id=" + id +
                 ", type='" + type + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ContainerType that = (ContainerType) o;
+        return id.equals(that.id) && type.equals(that.type);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, type);
     }
 }

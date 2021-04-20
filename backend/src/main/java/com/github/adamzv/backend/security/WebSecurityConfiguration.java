@@ -45,6 +45,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, SIGN_UP_URL).permitAll()
                 .antMatchers(HttpMethod.POST, LOGIN_URL).permitAll()
+                .antMatchers(HttpMethod.GET, CONFIRM_USER_URL).permitAll()
+
                 // AUTH_WHITELIST enables swagger
                 .antMatchers(AUTH_WHITELIST).permitAll()
                 .anyRequest().authenticated()

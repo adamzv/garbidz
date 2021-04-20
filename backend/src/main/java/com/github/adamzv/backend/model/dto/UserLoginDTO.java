@@ -1,6 +1,7 @@
-package com.github.adamzv.backend.model;
+package com.github.adamzv.backend.model.dto;
 
-public class UserLogin {
+public class UserLoginDTO {
+
     private String username;
     private String password;
 

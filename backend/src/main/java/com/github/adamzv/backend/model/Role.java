@@ -11,7 +11,8 @@ public class Role {
     private Long id;
 
     @Column(name = "user_role")
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private ERole role;
 
     public Long getId() {
         return id;
@@ -21,11 +22,20 @@ public class Role {
         this.id = id;
     }
 
-    public String getRole() {
+//    public String getRole() {
+//        return role;
+//    }
+//
+//    public void setRole(String role) {
+//        this.role = role;
+//    }
+
+
+    public ERole getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(ERole role) {
         this.role = role;
     }
 
