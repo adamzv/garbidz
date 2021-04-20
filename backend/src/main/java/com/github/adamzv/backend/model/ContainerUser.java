@@ -20,7 +20,7 @@ public class ContainerUser implements Serializable {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "id_user")
-    @JsonBackReference
+    @JsonBackReference(value = "container-user")
     private User user;
 
     public ContainerUser() {

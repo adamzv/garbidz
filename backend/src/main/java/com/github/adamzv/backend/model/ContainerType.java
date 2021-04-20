@@ -46,11 +46,11 @@ public class ContainerType {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ContainerType that = (ContainerType) o;
-        return id.equals(that.id) && type.equals(that.type) && size.equals(that.size);
+        return id.equals(that.id) && type.equals(that.type);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, type, size);
+        return Objects.hash(id, type);
     }
 }
