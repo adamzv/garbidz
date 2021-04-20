@@ -9,6 +9,15 @@ import com.github.adamzv.backend.model.dto.UserFinishDTO;
 import com.github.adamzv.backend.model.dto.UserRegistrationDTO;
 import com.github.adamzv.backend.repository.*;
 import com.github.adamzv.backend.security.validation.PasswordConstraintValidator;
+import com.github.adamzv.backend.exception.*;
+import com.github.adamzv.backend.model.Address;
+import com.github.adamzv.backend.model.Role;
+import com.github.adamzv.backend.model.User;
+import com.github.adamzv.backend.repository.AddressRepository;
+import com.github.adamzv.backend.repository.RoleRepository;
+import com.github.adamzv.backend.repository.UserRepository;
+import com.github.adamzv.backend.security.service.UserDetailsServiceImpl;
+import org.passay.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -19,6 +28,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.Arrays;
 
 @Service
 public class UserService {
@@ -32,7 +42,6 @@ public class UserService {
 
 
     private PasswordEncoder passwordEncoder;
-    private PasswordConstraintValidator passwordValidator;
 
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
@@ -48,20 +57,19 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-
-
-    // TODO: service method validations
     // TODO: refactor everything to return ResponseEntity
     public User createUser(UserRegistrationDTO userDTO) {
-        if (userRepository.findUserByEmail(userDTO.getEmail()) != null) {
-            throw new RuntimeException("Email is already used.");
-        }
+        try {
         User user = new User();
+
+        if (isValid(user.getPassword()) == true) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
+
         user.setId(0L);
         user.setEmail(userDTO.getEmail());
         user.setName(userDTO.getName());
         user.setSurname(userDTO.getSurname());
-        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         user.setEnabled(false);
 
         // Set user role
@@ -72,6 +80,9 @@ public class UserService {
         roles.add(role);
         user.setRoles(roles);
         return userRepository.save(user);
+        } catch (Exception e) {
+            throw new EmailExistsException();
+        }
     }
 
     public User finishUserRegistration(UserFinishDTO userDTO, String email) {
@@ -158,4 +169,22 @@ public class UserService {
         }
     }
 
+    public boolean isValid(final String password) {
+        if (password.isEmpty() == false) {
+            final PasswordValidator validator = new PasswordValidator(Arrays.asList(
+                    new WhitespaceRule(),
+                    new LengthRule(8, 16),
+                    new CharacterRule(EnglishCharacterData.UpperCase, 1),
+                    new CharacterRule(EnglishCharacterData.Digit, 1),
+                    new CharacterRule(EnglishCharacterData.Special, 1)));
+            final RuleResult result = validator.validate(new PasswordData(password));
+            if (result.isValid()) {
+                return true;
+            } else {
+                throw new InvalidPasswordException(validator.getMessages(result));
+            }
+        } else {
+            throw new EmptyPasswordException();
+        }
+    }
 }

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.adamzv.backend.security.validation.ValidEmail;
-import com.github.adamzv.backend.security.validation.ValidPassword;
 import com.sun.istack.NotNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -46,7 +45,6 @@ public class User implements UserDetails {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotBlank(message = "Password is a mandatory field!")
     @Size(min = 8, max = 255, message = "Password must have between 8 to 255 characters!")
-    @ValidPassword
     private String password;
 
     private boolean enabled;
