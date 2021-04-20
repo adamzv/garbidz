@@ -2,7 +2,6 @@ CREATE TABLE IF NOT EXISTS `town`
 (
     `id`        BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
     `town`      VARCHAR(255) NOT NULL,
-    `zipcode`   VARCHAR(5)   NOT NULL,
     `id_region` BIGINT(20) UNSIGNED NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE INDEX `id_UNIQUE` (`id` ASC),

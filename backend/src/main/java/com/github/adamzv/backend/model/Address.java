@@ -15,6 +15,10 @@ public class Address {
     @NotNull
     private String address;
 
+    private String lat;
+
+    private String lon;
+
     @ManyToOne
     @JoinColumn(name = "id_town", nullable = false)
     private Town town;
@@ -35,6 +39,22 @@ public class Address {
         this.address = address;
     }
 
+    public String getLat() {
+        return lat;
+    }
+
+    public void setLat(String lat) {
+        this.lat = lat;
+    }
+
+    public String getLon() {
+        return lon;
+    }
+
+    public void setLon(String lon) {
+        this.lon = lon;
+    }
+
     public Town getTown() {
         return town;
     }
@@ -48,6 +68,8 @@ public class Address {
         return "Address{" +
                 "id=" + id +
                 ", address='" + address + '\'' +
+                ", lat='" + lat + '\'' +
+                ", lon='" + lon + '\'' +
                 ", town=" + town +
                 '}';
     }
