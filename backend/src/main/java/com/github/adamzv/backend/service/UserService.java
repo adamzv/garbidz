@@ -8,6 +8,7 @@ import com.github.adamzv.backend.model.dto.ContainerRegistrationDTO;
 import com.github.adamzv.backend.model.dto.UserFinishDTO;
 import com.github.adamzv.backend.model.dto.UserRegistrationDTO;
 import com.github.adamzv.backend.repository.*;
+import com.github.adamzv.backend.security.validation.PasswordConstraintValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -31,6 +32,7 @@ public class UserService {
 
 
     private PasswordEncoder passwordEncoder;
+    private PasswordConstraintValidator passwordValidator;
 
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
@@ -45,6 +47,8 @@ public class UserService {
         this.containerUserRepository = containerUserRepository;
         this.passwordEncoder = passwordEncoder;
     }
+
+
 
     // TODO: service method validations
     // TODO: refactor everything to return ResponseEntity

@@ -1,6 +1,8 @@
 package com.github.adamzv.backend.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 // role is a reserved word in MySQL
 @Entity(name = "user_role")
@@ -11,6 +13,8 @@ public class Role {
     private Long id;
 
     @Column(name = "user_role")
+    @NotBlank(message = "Role is mandatory field!")
+    @Size(min = 1, max = 255, message = "Role must have between 1 and 255 characters!")
     @Enumerated(EnumType.STRING)
     private ERole role;
 
@@ -21,15 +25,6 @@ public class Role {
     public void setId(Long id) {
         this.id = id;
     }
-
-//    public String getRole() {
-//        return role;
-//    }
-//
-//    public void setRole(String role) {
-//        this.role = role;
-//    }
-
 
     public ERole getRole() {
         return role;

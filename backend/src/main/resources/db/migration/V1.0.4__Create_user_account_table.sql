@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS `user_account` (
     `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT ,
     `name` VARCHAR(255) NOT NULL ,
     `surname` VARCHAR(255) NOT NULL ,
-    `email` VARCHAR(255) NOT NULL  ,
+    `email` VARCHAR(255) NOT NULL UNIQUE ,
     `password` TEXT NOT NULL ,
     `id_role` BIGINT(20) UNSIGNED NOT NULL ,
     `id_address` BIGINT(20) UNSIGNED NOT NULL ,
