@@ -158,7 +158,7 @@ class _LoginState extends State<Login> {
                               border: UnderlineInputBorder(),
                               labelText: 'Email',
                               prefixIcon: Icon(Icons.account_circle_rounded),
-                              hintText: 'Enter valid email as abc@gmail.com'),
+                              hintText: 'Vložte email v tvare abc@abc.com'),
                         ),
                       ),
                       Padding(
@@ -170,7 +170,7 @@ class _LoginState extends State<Login> {
                           decoration: InputDecoration(
                               hoverColor: Color.fromRGBO(63, 29, 90, 1.0),
                               border: UnderlineInputBorder(),
-                              labelText: 'Password',
+                              labelText: 'Heslo',
                               prefixIcon: Icon(Icons.lock),
                               suffixIcon: IconButton(
                                   icon: Icon(_isObscure
@@ -181,7 +181,7 @@ class _LoginState extends State<Login> {
                                       _isObscure = !_isObscure;
                                     });
                                   }),
-                              hintText: 'Enter password'),
+                              hintText: 'Vložte heslo'),
                         ),
                       ),
                       TextButton(
