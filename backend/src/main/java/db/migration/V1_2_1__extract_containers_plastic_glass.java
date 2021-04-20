@@ -7,7 +7,6 @@ import com.github.adamzv.backend.model.Container;
 import org.flywaydb.core.api.migration.BaseJavaMigration;
 import org.flywaydb.core.api.migration.Context;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -28,7 +27,8 @@ public class V1_2_1__extract_containers_plastic_glass extends BaseJavaMigration 
         ObjectMapper mapper = new ObjectMapper();
         TypeReference<List<Container>> typeReference = new TypeReference<List<Container>>() {
         };
-        InputStream inputStream = new FileInputStream("src/main/resources/db/json/plastic_glass.json");
+        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+        InputStream inputStream = classloader.getResourceAsStream("json/plastic_glass.json");
         try {
             List<Container> containers = mapper.readValue(inputStream, typeReference);
 
