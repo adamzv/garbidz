@@ -9,6 +9,7 @@ class Register extends StatefulWidget {
 
 class _RegisterPageState extends State<Register> {
   bool _isObscure = true;
+  bool _isObscure2 = true;
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +73,7 @@ class _RegisterPageState extends State<Register> {
                 ),
               ),
               Expanded(
-                flex: 5,
+                flex: 6,
                 child: Container(
                   padding: const EdgeInsets.only(
                       left: 20.0, right: 20.0, top: 0, bottom: 0),
@@ -160,7 +161,7 @@ class _RegisterPageState extends State<Register> {
                                     labelText: 'Meno',
                                     prefixIcon:
                                         Icon(Icons.account_circle_rounded),
-                                    hintText: 'Enter name'),
+                                    hintText: 'Vložte meno'),
                               ),
                             ),
                             SizedBox(
@@ -171,7 +172,7 @@ class _RegisterPageState extends State<Register> {
                               decoration: InputDecoration(
                                   border: UnderlineInputBorder(),
                                   labelText: 'Priezvisko',
-                                  hintText: '...'),
+                                  hintText: 'Vložte priezvisko'),
                             )),
                           ],
                         ),
@@ -185,7 +186,7 @@ class _RegisterPageState extends State<Register> {
                               border: UnderlineInputBorder(),
                               labelText: 'Email',
                               prefixIcon: Icon(Icons.email),
-                              hintText: 'Enter valid email as abc@gmail.com'),
+                              hintText: 'Vložte email v tvare abc@abc.com'),
                         ),
                       ),
                       Padding(
@@ -197,7 +198,7 @@ class _RegisterPageState extends State<Register> {
                           decoration: InputDecoration(
                               hoverColor: Color.fromRGBO(63, 29, 90, 1.0),
                               border: UnderlineInputBorder(),
-                              labelText: 'Password',
+                              labelText: 'Heslo',
                               prefixIcon: Icon(Icons.lock),
                               suffixIcon: IconButton(
                                   icon: Icon(_isObscure
@@ -208,7 +209,30 @@ class _RegisterPageState extends State<Register> {
                                       _isObscure = !_isObscure;
                                     });
                                   }),
-                              hintText: 'Enter password'),
+                              hintText: 'Vložte heslo'),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            left: 15.0, right: 15.0, top: 15, bottom: 0),
+                        //padding: EdgeInsets.symmetric(horizontal: 15),
+                        child: TextField(
+                          obscureText: _isObscure2,
+                          decoration: InputDecoration(
+                              hoverColor: Color.fromRGBO(63, 29, 90, 1.0),
+                              border: UnderlineInputBorder(),
+                              labelText: 'Zopakujte heslo',
+                              prefixIcon: Icon(Icons.lock),
+                              suffixIcon: IconButton(
+                                  icon: Icon(_isObscure2
+                                      ? Icons.visibility
+                                      : Icons.visibility_off),
+                                  onPressed: () {
+                                    setState(() {
+                                      _isObscure2 = !_isObscure2;
+                                    });
+                                  }),
+                              hintText: 'Vložte heslo ešte raz'),
                         ),
                       ),
                       Padding(
