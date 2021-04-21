@@ -1,4 +1,4 @@
-package com.github.adamzv.backend.security.validation;
+package com.github.adamzv.backend.validation;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

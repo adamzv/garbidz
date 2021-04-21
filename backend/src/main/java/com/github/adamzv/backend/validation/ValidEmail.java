@@ -1,4 +1,4 @@
-package com.github.adamzv.backend.security.validation;
+package com.github.adamzv.backend.validation;
 
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.FIELD;

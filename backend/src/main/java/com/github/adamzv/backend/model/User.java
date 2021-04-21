@@ -3,7 +3,7 @@ package com.github.adamzv.backend.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.github.adamzv.backend.security.validation.ValidEmail;
+import com.github.adamzv.backend.validation.ValidEmail;
 import com.sun.istack.NotNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
