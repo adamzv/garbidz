@@ -49,7 +49,12 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
                 // AUTH_WHITELIST enables swagger
                 .antMatchers(AUTH_WHITELIST).permitAll()
-                .anyRequest().authenticated()
+
+                // since we want to use @PreAuthorize annotation to fine control method security
+                // we can't close API for not authenticated users here, because we won't be able to
+                // unlock method with @PreAuthorize
+                // https://dzone.com/articles/secure-a-spring-boot-app-with-spring-security-and
+                //.anyRequest().authenticated()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

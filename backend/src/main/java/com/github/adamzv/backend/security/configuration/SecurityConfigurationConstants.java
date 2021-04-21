@@ -7,7 +7,10 @@ public class SecurityConfigurationConstants {
     public static final String CONFIRM_USER_URL = "/auth/confirm";
     public static final String TOKEN_PREFIX = "Bearer ";
     public static final String HEADER_STRING = "Authorization";
-    public static final long TOKEN_EXPIRATION = 3_600_000;
+
+    // expiration length is set to one year (currently we don't have implemented refresh token)
+    // and FE team does not want to handle sending request to /signin in background when token is about to expire
+    public static final long TOKEN_EXPIRATION = 31_556_952_000L;//3_600_000;
     public static final String[] AUTH_WHITELIST = {
             // -- Swagger UI v2
             "/v2/api-docs",
