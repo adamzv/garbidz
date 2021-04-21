@@ -97,7 +97,7 @@ class _RegisterPageState extends State<Register> {
                             flex: 1,
                             child: TextButton(
                               onPressed: () {
-                                Navigator.push(
+                                Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => Login(),
