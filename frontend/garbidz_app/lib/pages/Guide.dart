@@ -203,12 +203,9 @@ class _GuidePageState extends State<Guide> {
                                   suggestionsCallback: AddressApi.getAddressSuggestions,
                                   itemBuilder: (context, AdressGuide suggestion) {
                                     final address = suggestion;
-                                    return Padding(
-                                      padding: const EdgeInsets.all(10.0),
-                                      child: ListTile(
-                                        leading: Icon(Icons.location_pin),
-                                        title: Text(address.name),
-                                      ),
+                                    return ListTile(
+                                      leading: Icon(Icons.location_pin),
+                                      title: Text(address.name),
                                     );
                                   },
                                   onSuggestionSelected: (suggestion) {
