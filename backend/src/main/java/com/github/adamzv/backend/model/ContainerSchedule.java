@@ -11,7 +11,7 @@ import java.util.Set;
 public class ContainerSchedule implements Serializable {
 
     @Id
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "id_container")
     private Container container;
 

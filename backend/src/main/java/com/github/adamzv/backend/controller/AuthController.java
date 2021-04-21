@@ -37,7 +37,6 @@ public class AuthController {
         this.eventPublisher = eventPublisher;
     }
 
-    // TODO: validation
     @PostMapping("/signup")
     public ResponseEntity<User> signupUser(@RequestBody UserRegistrationDTO userDTO) {
         User user = userService.createUser(userDTO);

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sun.istack.NotNull;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import java.util.Date;
 
 @Entity
@@ -23,6 +25,7 @@ public class Complaint {
     private Date datetime;
 
     @NotNull
+    @NotBlank(message = "Please describe your problem here!")
     private String text;
 
     @Lob

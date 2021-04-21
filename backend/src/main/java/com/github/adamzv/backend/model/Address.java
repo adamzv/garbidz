@@ -3,6 +3,8 @@ package com.github.adamzv.backend.model;
 import com.sun.istack.NotNull;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "address")
@@ -13,6 +15,8 @@ public class Address {
     private Long id;
 
     @NotNull
+    @NotBlank(message = "Address is a mandatory field!")
+    @Size(min = 1, max = 255, message = "Address must be between 1 and 255 characters long!")
     private String address;
 
     private String lat;

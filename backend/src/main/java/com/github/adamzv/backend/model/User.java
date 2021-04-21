@@ -3,6 +3,7 @@ package com.github.adamzv.backend.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.github.adamzv.backend.validation.ValidEmail;
 import com.sun.istack.NotNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -10,6 +11,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -22,17 +25,26 @@ public class User implements UserDetails {
     private Long id;
 
     @NotNull
+    @NotBlank(message = "Name is a mandatory field!")
+    @Size(min = 1, max = 255, message = "Name must have between 1 and 255 characters!")
     private String name;
 
     @NotNull
+    @NotBlank(message = "Surname is a mandatory field!")
+    @Size(min = 1, max = 255, message = "Surname must have between 1 and 255 characters!")
     private String surname;
 
     @NotNull
     @Column(unique = true)
+    @NotBlank(message = "Email is a mandatory field!")
+    @Size(min = 1, max = 255, message = "Email must be between 1 and 255 characters!")
+    @ValidEmail
     private String email;
 
     @NotNull
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @NotBlank(message = "Password is a mandatory field!")
+    @Size(min = 8, max = 255, message = "Password must have between 8 to 255 characters!")
     private String password;
 
     private boolean enabled;
