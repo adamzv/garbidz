@@ -5,7 +5,7 @@ import com.github.adamzv.backend.model.ContainerType;
 public class ContainerRegistrationDTO {
 
     private Long addressId;
-    private ContainerType type;
+    private String garbageType;
 
     public ContainerRegistrationDTO() {
     }
@@ -18,11 +18,11 @@ public class ContainerRegistrationDTO {
         this.addressId = addressId;
     }
 
-    public ContainerType getType() {
-        return type;
+    public String getGarbageType() {
+        return garbageType;
     }
 
-    public void setType(ContainerType type) {
-        this.type = type;
+    public void setGarbageType(String garbageType) {
+        this.garbageType = garbageType;
     }
 }

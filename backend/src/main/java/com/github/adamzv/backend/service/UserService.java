@@ -91,9 +91,9 @@ public class UserService {
         // so for assigning containers to users, frontend has to send address id and type (String)
         Set<Container> containers = containerRepository.findAllByAddress_Id(userDTO.getAddressId());
         Set<Container> userContainers = containers.stream().filter(container -> userDTO.getContainers().stream()
-                .map(ContainerRegistrationDTO::getType)
+                .map(ContainerRegistrationDTO::getGarbageType)
                 .collect(Collectors.toSet())
-                .contains(container.getType()))
+                .contains(container.getGarbageType()))
                 .collect(Collectors.toSet());
 
         Set<ContainerUser> set = userContainers.stream()
