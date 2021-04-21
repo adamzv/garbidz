@@ -14,6 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Set;
+
 @RestController
 @RequestMapping("/containers")
 public class ContainerController {
@@ -37,6 +39,11 @@ public class ContainerController {
     public Container getContainer(@PathVariable Long id) {
         return containerRepository.findById(id)
                 .orElseThrow(() -> new ContainerNotFoundException(id));
+    }
+
+    @GetMapping("/address/{id}")
+    public Set<Container> getAddressContainers(@PathVariable Long id) {
+        return containerRepository.findAllByAddress_Id(id);
     }
 
     @PostMapping
@@ -69,7 +76,7 @@ public class ContainerController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteContainer(@PathVariable Long id){
+    public void deleteContainer(@PathVariable Long id) {
         containerRepository.deleteById(id);
     }
 }
