@@ -11,6 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/addresses")
 public class AddressController {
@@ -26,6 +28,12 @@ public class AddressController {
     @GetMapping
     public Page<Address> getAddresses(@PageableDefault(size = 50)  Pageable pageable) {
         return addressRepository.findAll(pageable);
+    }
+
+    // Returns everything because FE team can't be bothered with handling address pagination
+    @GetMapping("/all")
+    public List<Address> getAllAddresses() {
+        return addressRepository.findAll();
     }
 
     @GetMapping("/{id}")

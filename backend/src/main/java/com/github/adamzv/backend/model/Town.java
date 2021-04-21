@@ -3,6 +3,8 @@ package com.github.adamzv.backend.model;
 import com.sun.istack.NotNull;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "town")
@@ -13,6 +15,8 @@ public class Town {
     private Long id;
 
     @NotNull
+    @NotBlank(message = "Town is mandatory field!")
+    @Size(min = 1, max = 255, message = "Town must have between 1 and 255 characters!")
     private String town;
 
     // problems with circular dependencies were solved by using unidirectional mapping

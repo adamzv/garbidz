@@ -3,6 +3,8 @@ package com.github.adamzv.backend.model;
 import com.sun.istack.NotNull;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.Objects;
 
 @Entity
@@ -15,6 +17,8 @@ public class ContainerType {
 
     @Column(length = 255)
     @NotNull
+    @NotBlank(message = "Type of container is mandatory field!")
+    @Size(min = 1, max = 255, message = "Type of container must be between 1 and 255 characters long!")
     private String type;
 
     public Long getId() {
