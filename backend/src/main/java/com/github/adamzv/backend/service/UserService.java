@@ -53,8 +53,8 @@ public class UserService {
             user.setId(0L);
 
             //validate the password
-            if (isValid(user.getPassword(), false)) {
-                user.setPassword(passwordEncoder.encode(user.getPassword()));
+            if (isValid(userDTO.getPassword(), false)) {
+                user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
             }
 
             user.setEmail(userDTO.getEmail());
