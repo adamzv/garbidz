@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:http/http.dart' as http;
 import 'package:garbidz_app/components/AdressGuide.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class Guide extends StatefulWidget {
   @override
@@ -14,6 +17,8 @@ class _GuidePageState extends State<Guide> {
   int pageChange = 0;
   int idAddress = 0;
   var _isSelectedButtons = [false, false, false, false];
+  var _containerTypes = ["zmesový komunálny odpad", "plasty", "papier a lepenka", "bioodpad"];
+  var _finishedGuide = false;
 
   final TextEditingController _typeAheadController = TextEditingController();
 
@@ -25,6 +30,35 @@ class _GuidePageState extends State<Guide> {
     // TODO: implement initState
     super.initState();
     time = TimeOfDay.now();
+  }
+
+  void _finishGuide(){
+    if(idAddress > 0){
+      List positions = [];
+      for(int i=0; i<_isSelectedButtons.length; i++){
+        if(_isSelectedButtons[i]){
+          positions.add(i);
+        }
+      }
+      if(positions.length>0){
+        Map json = {
+          'addressId':idAddress,
+          'containers':positions.map((e) => {'addressId':idAddress, 'garbageType':_containerTypes[e]})
+        };
+        print(jsonEncode(json.toString()));
+        setState(() {
+          _finishedGuide = true;
+        });
+      }else{
+        setState(() {
+          _finishedGuide = false;
+        });
+      }
+    }else{
+    }
+  }
+  _sendJson(){
+    print("odoslane");
   }
   int _selectedIndex = 0;
   void _onItemTapped(int index) {
@@ -212,8 +246,8 @@ class _GuidePageState extends State<Guide> {
                                     _typeAheadController.text = suggestion.name;
                                     setState(() {
                                       idAddress = suggestion.id;
+                                      _finishGuide();
                                     });
-                                    print(idAddress.toString());
                                   },
                                 ),
                               )
@@ -300,6 +334,7 @@ class _GuidePageState extends State<Guide> {
                                         setState(() {
                                           _isSelectedButtons[0] = !_isSelectedButtons[0];
                                         });
+                                        _finishGuide();
                                       }
                                     ),
                                   ),
@@ -331,6 +366,7 @@ class _GuidePageState extends State<Guide> {
                                           setState(() {
                                             _isSelectedButtons[1] = !_isSelectedButtons[1];
                                           });
+                                          _finishGuide();
                                         }
                                     ),
                                   ),
@@ -362,6 +398,7 @@ class _GuidePageState extends State<Guide> {
                                           setState(() {
                                             _isSelectedButtons[2] = !_isSelectedButtons[2];
                                           });
+                                          _finishGuide();
                                         }
                                     ),
                                   ),
@@ -393,6 +430,7 @@ class _GuidePageState extends State<Guide> {
                                           setState(() {
                                             _isSelectedButtons[3] = !_isSelectedButtons[3];
                                           });
+                                          _finishGuide();
                                         }
                                     ),
                                   ),
@@ -439,7 +477,7 @@ class _GuidePageState extends State<Guide> {
                             children: [
                               Center(
                                 child: Container(
-                                    width: 200,
+                                    width: 150,
                                     child: Image.asset('assets/guide/04.png')),
                               ),
                               SizedBox(height: 20.0),
@@ -478,7 +516,39 @@ class _GuidePageState extends State<Guide> {
                                     }
                                 ),
                               ),
-                              SizedBox(height: 30.0)
+                              SizedBox(height: 20.0),
+                              SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                    child: Text("Dokončiť"),
+                                    style: ElevatedButton.styleFrom(
+                                      shape: new RoundedRectangleBorder(
+                                        borderRadius: new BorderRadius.circular(8.0),
+                                      ),
+                                      textStyle: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontSize: 18.0,
+                                      ),
+                                      primary: _finishedGuide ? Color.fromRGBO(189, 18, 121, 1.0) : Color.fromRGBO(230, 230, 230, 0.5),
+                                      onPrimary: _finishedGuide ? Colors.white : Color.fromRGBO(189, 18, 121, 1.0),
+                                      alignment: Alignment.center,
+                                      elevation: 0,
+
+                                      padding: EdgeInsets.symmetric(horizontal:20.0, vertical: 15.0),
+                                    ),
+                                    onPressed: (){ _finishedGuide ? _sendJson() : null;
+                                    }
+                                ),
+                              ),
+                              SizedBox(height: 10.0),
+                              _finishedGuide ? SizedBox(height: 0.0) : Text("Najprv si musíte zvoliť adresu a aspoň jeden kontajner",
+                                style: TextStyle(
+                                  color: Color.fromRGBO(63, 29, 90, 1.0),
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14.0,
+                                ),
+                              ),
+                              SizedBox(height: 30.0),
                             ],
                           ),
                         ),

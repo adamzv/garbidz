@@ -31,71 +31,72 @@ class _MapContainersState extends State<MapContainers> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Mapy kontajnerov'),
-      ),
-      body: FutureBuilder(
-        future: httpService.getPosts(),
-        builder: (BuildContext context, AsyncSnapshot<List<Address>> snapshot){
-          if(snapshot.hasData){
-            List<Address> addresses = snapshot.data;
-          return FlutterMap(
-            options: MapOptions(
-                center: LatLng(48.30763, 18.08453),
-                zoom: 14.0,
-                plugins: [MarkerClusterPlugin(),]
-            ),
-            layers: [
-              new TileLayerOptions(
-                urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                subdomains: ['a', 'b', 'c'],
+      backgroundColor: Color.fromRGBO(189, 18, 121, 1.0),
+      body: SafeArea(
+        child: FutureBuilder(
+          future: httpService.getPosts(),
+          builder: (BuildContext context, AsyncSnapshot<List<Address>> snapshot){
+            if(snapshot.hasData){
+              List<Address> addresses = snapshot.data;
+            return FlutterMap(
+              options: MapOptions(
+                  center: LatLng(48.30763, 18.08453),
+                  zoom: 14.0,
+                  plugins: [MarkerClusterPlugin(),]
               ),
-              new MarkerClusterLayerOptions(
-                maxClusterRadius: 120,
-                size: Size(40, 40),
-                fitBoundsOptions: FitBoundsOptions(
-                  padding: EdgeInsets.all(50),
+              layers: [
+                new TileLayerOptions(
+                  urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                  subdomains: ['a', 'b', 'c'],
                 ),
-                markers: addresses.map((address) => Marker(
-                  width: 30.0,
-                  height: 30.0,
-                  point: new LatLng(address.lat, address.lon),
-                  builder: (ctx) =>
-                  new Container(
-                    child: IconButton(
-                      onPressed: (){
-                        showModalBottomSheet(
-                            context: context,
-                            builder: (builder){ return MarkDetail(address: address.address+", "+address.town['town'], containers: []); }
-                        );
-                      },
-                      color: Colors.pink,
-                      iconSize: 30.0,
-                      icon: Icon(
-                          Icons.location_pin,
-                          color: Colors.pink),
-                    ),
+                new MarkerClusterLayerOptions(
+                  maxClusterRadius: 120,
+                  size: Size(40, 40),
+                  fitBoundsOptions: FitBoundsOptions(
+                    padding: EdgeInsets.all(50),
                   ),
-                )).toList(),
-                polygonOptions: PolygonOptions(
-                   borderColor: Colors.pink,
-                     color: Colors.black12,
-                      borderStrokeWidth: 3),
-                      builder: (context, markers) {
-                      return FloatingActionButton(
-          child: Text(markers.length.toString()),
-          onPressed: null,
-          );
+                  markers: addresses.map((address) => Marker(
+                    width: 30.0,
+                    height: 30.0,
+                    point: new LatLng(address.lat, address.lon),
+                    builder: (ctx) =>
+                    new Container(
+                      child: IconButton(
+                        onPressed: (){
+                          showModalBottomSheet(
+                              context: context,
+                              builder: (builder){ return MarkDetail(address: address.address+", "+address.town['town'], containers: []); }
+                          );
+                        },
+                        color: Colors.pink,
+                        iconSize: 30.0,
+                        icon: Icon(
+                            Icons.location_pin,
+                            color: Colors.pink),
+                      ),
+                    ),
+                  )).toList(),
+                  polygonOptions: PolygonOptions(
+                     borderColor: Colors.pink,
+                       color: Colors.black12,
+                        borderStrokeWidth: 3),
+                        builder: (context, markers) {
+                        return FloatingActionButton(
+            child: Text(markers.length.toString()),
+            backgroundColor: Colors.pink,
+            onPressed: null,
+            );
+            },
+
+                ),
+
+              ],
+            );
+            }else {
+              return Center(child: CircularProgressIndicator());
+            }
           },
-
-              ),
-
-            ],
-          );
-          }else {
-            return Center(child: CircularProgressIndicator());
-          }
-        },
+        ),
       )
     );
   }
