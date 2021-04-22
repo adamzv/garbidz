@@ -3,6 +3,7 @@ package com.github.adamzv.backend.controller;
 import com.github.adamzv.backend.exception.RegionNotFoundException;
 import com.github.adamzv.backend.model.Region;
 import com.github.adamzv.backend.repository.RegionRepository;
+import com.github.adamzv.backend.security.annotation.IsModerator;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,12 +30,14 @@ public class RegionController {
     }
 
     @PostMapping
+    @IsModerator
     public Region newRegion(@RequestBody Region region) {
         region.setId(0L);
         return regionRepository.save(region);
     }
 
     @PutMapping("/{id}")
+    @IsModerator
     public Region updateRegion(@PathVariable Long id, @RequestBody Region newRegion) {
         return regionRepository.findById(id)
                 .map(region -> {
@@ -45,6 +48,7 @@ public class RegionController {
     }
 
     @DeleteMapping("/{id}")
+    @IsModerator
     public void deleteRegion(@PathVariable Long id) {
         regionRepository.deleteById(id);
     }

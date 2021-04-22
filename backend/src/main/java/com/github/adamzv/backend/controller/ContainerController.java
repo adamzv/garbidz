@@ -9,6 +9,7 @@ import com.github.adamzv.backend.model.ContainerType;
 import com.github.adamzv.backend.repository.AddressRepository;
 import com.github.adamzv.backend.repository.ContainerRepository;
 import com.github.adamzv.backend.repository.ContainerTypeRepository;
+import com.github.adamzv.backend.security.annotation.IsModerator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -47,6 +48,7 @@ public class ContainerController {
     }
 
     @PostMapping
+    @IsModerator
     public Container newContainer(@RequestBody Container container) {
         container.setId(0L);
 
@@ -62,6 +64,7 @@ public class ContainerController {
     }
 
     @PutMapping("/{id}")
+    @IsModerator
     public Container updateContainer(@PathVariable Long id, @RequestBody Container newContainer) {
         return containerRepository.findById(id)
                 .map(container -> {
@@ -76,6 +79,7 @@ public class ContainerController {
     }
 
     @DeleteMapping("/{id}")
+    @IsModerator
     public void deleteContainer(@PathVariable Long id) {
         containerRepository.deleteById(id);
     }
