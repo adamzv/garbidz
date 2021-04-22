@@ -6,6 +6,7 @@ import com.github.adamzv.backend.model.Region;
 import com.github.adamzv.backend.model.Town;
 import com.github.adamzv.backend.repository.RegionRepository;
 import com.github.adamzv.backend.repository.TownRepository;
+import com.github.adamzv.backend.security.annotation.IsModerator;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,6 +39,7 @@ public class TownController {
     }
 
     @PostMapping
+    @IsModerator
     public Town newTown(@RequestBody Town town) {
 
         // setting town id to 0 forces JPA to generate a new id
@@ -53,6 +55,7 @@ public class TownController {
     }
 
     @PutMapping("/{id}")
+    @IsModerator
     public Town updateTown(@PathVariable Long id, @RequestBody Town newTown) {
         return townRepository.findById(id)
                 .map(town -> {
@@ -63,8 +66,8 @@ public class TownController {
                 .orElseThrow(() -> new RuntimeException("Town with id " + id + " can not be updated!"));
     }
 
-    // TODO: error validation for delete methods
     @DeleteMapping("/{id}")
+    @IsModerator
     public void deleteTown(@PathVariable Long id) {
         townRepository.deleteById(id);
     }

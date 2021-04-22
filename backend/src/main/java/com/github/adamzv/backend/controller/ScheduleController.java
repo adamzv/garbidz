@@ -3,6 +3,7 @@ package com.github.adamzv.backend.controller;
 import com.github.adamzv.backend.exception.ScheduleNotFoundException;
 import com.github.adamzv.backend.model.Schedule;
 import com.github.adamzv.backend.repository.ScheduleRepository;
+import com.github.adamzv.backend.security.annotation.IsModerator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -30,12 +31,14 @@ public class ScheduleController {
     }
 
     @PostMapping
+    @IsModerator
     public Schedule newSchedule(@RequestBody Schedule schedule){
             schedule.setId(0L);
             return scheduleRepository.save(schedule);
     }
 
     @PutMapping("/{id}")
+    @IsModerator
     public Schedule updateschedule(@PathVariable Long id, @RequestBody Schedule newSchedule) {
             return scheduleRepository.findById(id)
                     .map(schedule -> {
@@ -47,6 +50,7 @@ public class ScheduleController {
     }
 
     @DeleteMapping("/{id}")
+    @IsModerator
     public void deleteSchedule(@PathVariable Long id){
             scheduleRepository.deleteById(id);
     }
