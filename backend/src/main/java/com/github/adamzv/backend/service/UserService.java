@@ -105,8 +105,16 @@ public class UserService {
     }
 
     public User upgradeRole(Long id, ERole role) {
-        // TODO: update setting roles
-        return null;
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+        Role newRole = roleRepository.findByRole(role).orElseThrow(() -> new RoleNotFoundException());
+        Set<Role> roles = user.getRoles();
+        roles.add(newRole);
+        if (roles.stream().filter(role1 -> role1.getRole().equals(ERole.ROLE_ADMIN)).findAny().isPresent() &&
+                roles.stream().filter(role1 -> role1.getRole().equals(ERole.ROLE_MODERATOR)).findAny().isEmpty()) {
+            roles.add(roleRepository.findByRole(ERole.ROLE_MODERATOR).orElseThrow(() -> new RoleNotFoundException()));
+        }
+        user.setRoles(roles);
+        return userRepository.save(user);
     }
 
     public User updateUser(Long id, User newUser) {

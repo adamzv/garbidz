@@ -51,7 +51,6 @@ public class AuthController {
     }
 
     @PostMapping("/signin")
-    // TODO: validation
     public ResponseEntity<User> signinUser(@RequestBody UserLoginDTO login) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(login.getUsername(), login.getPassword()));

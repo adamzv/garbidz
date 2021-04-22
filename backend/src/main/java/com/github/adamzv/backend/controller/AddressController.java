@@ -6,6 +6,7 @@ import com.github.adamzv.backend.model.Address;
 import com.github.adamzv.backend.model.Town;
 import com.github.adamzv.backend.repository.AddressRepository;
 import com.github.adamzv.backend.repository.TownRepository;
+import com.github.adamzv.backend.security.annotation.IsModerator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -43,6 +44,7 @@ public class AddressController {
     }
 
     @PostMapping
+    @IsModerator
     public Address newAddress(@RequestBody Address address) {
         address.setId(0L);
 
@@ -53,6 +55,7 @@ public class AddressController {
     }
 
     @PutMapping("/{id}")
+    @IsModerator
     public Address updateAddress(@PathVariable Long id, @RequestBody Address newAddress) {
         return addressRepository.findById(id)
                 .map(address -> {
@@ -64,6 +67,7 @@ public class AddressController {
     }
 
     @DeleteMapping("/{id}")
+    @IsModerator
     public void deleteTown(@PathVariable Long id) {
         addressRepository.deleteById(id);
     }

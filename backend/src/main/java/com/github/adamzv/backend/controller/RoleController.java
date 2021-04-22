@@ -3,12 +3,15 @@ package com.github.adamzv.backend.controller;
 import com.github.adamzv.backend.exception.RoleNotFoundException;
 import com.github.adamzv.backend.model.Role;
 import com.github.adamzv.backend.repository.RoleRepository;
+import com.github.adamzv.backend.security.annotation.IsModerator;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping(path = "/roles")
+@PreAuthorize("hasRole('MODERATOR')")
 public class RoleController {
 
     private RoleRepository roleRepository;

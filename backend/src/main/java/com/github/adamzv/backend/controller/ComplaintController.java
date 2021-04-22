@@ -11,9 +11,15 @@ import com.github.adamzv.backend.model.User;
 import com.github.adamzv.backend.repository.AddressRepository;
 import com.github.adamzv.backend.repository.ComplaintRepository;
 import com.github.adamzv.backend.repository.UserRepository;
+import com.github.adamzv.backend.security.annotation.IsModerator;
+import com.github.adamzv.backend.security.annotation.IsSpecificUserOrModerator;
+import com.github.adamzv.backend.security.annotation.IsUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,24 +41,33 @@ public class ComplaintController {
     }
 
     @GetMapping
+    @IsModerator
     public Page<Complaint> getComplaints(@PageableDefault(size = 9) Pageable pageable) {
         return complaintRepository.findAll(pageable);
     }
 
     @GetMapping("/{id}")
+    @IsUser
+    @IsSpecificUserOrModerator
     public Complaint getComplaint(@PathVariable Long id) {
         return complaintRepository.findById(id)
                 .orElseThrow(() -> new ComplaintNotFoundException(id));
     }
 
-    @PostMapping
-    public Complaint newComplaint(@RequestParam("complaint") String complaintRequest, @RequestParam(value = "file", required = false) MultipartFile multipartImage) throws Exception {
+    @GetMapping("/user/{id}")
+    @IsUser
+    @IsSpecificUserOrModerator
+    public ResponseEntity<Page<Complaint>> getUsersComplaints(Pageable pageable, @PathVariable Long id) {
+        return ResponseEntity.ok(complaintRepository.findAllByUser_Id(pageable, id));
+    }
 
+    @PostMapping
+    @IsUser
+    public Complaint newComplaint(@RequestParam("complaint") String complaintRequest, @RequestParam(value = "file", required = false) MultipartFile multipartImage) throws Exception {
         ObjectMapper mapper = new ObjectMapper();
         ComplaintHelper complaintObject = mapper.readValue(complaintRequest, ComplaintHelper.class);
 
         Complaint complaint = new Complaint();
-
         complaint.setId(0L);
 
         User user = userRepository.findById(complaintObject.getUserId())
@@ -72,6 +87,8 @@ public class ComplaintController {
     }
 
     @PutMapping("/{id}")
+    @IsUser
+    @PreAuthorize("newComplaint.user.username == authentication.principal || hasRole('MODERATOR')")
     public Complaint updateComplaint(@PathVariable Long id,
                                      @RequestParam("complaint") String newComplaint,
                                      @RequestParam(value = "file", required = false) MultipartFile multipartImage) throws Exception {
@@ -99,6 +116,7 @@ public class ComplaintController {
     }
 
     @DeleteMapping("/{id}")
+    @IsModerator
     public void deleteComplaint(@PathVariable Long id) {
         complaintRepository.deleteById(id);
     }
