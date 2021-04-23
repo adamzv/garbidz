@@ -42,15 +42,28 @@ class DBProvider{
 
   newUser(User newUser) async{
     final db = await database;
+    String querry = "SELECT COUNT(email) FROM users WHERE email='"+ newUser.email+"'";
 
+     int count = Sqflite.firstIntValue(await db.rawQuery(querry));
+     if(count ==0){
     var res = await db.rawInsert('''
       INSERT INTO users(
        first_name, last_name, email, token) 
        VALUES(?,?,?,?)
     ''', [newUser.first_name, newUser.last_name, newUser.email, newUser.token]);
 
-    return res;
-  }
+    return res;}
+     else{
+       var res = await db.rawUpdate('''
+      UPDATE users SET
+       first_name = ?, last_name = ?, email = ?, token = ?
+       
+      WHERE email = ?''', [newUser.first_name, newUser.last_name, newUser.email, newUser.token,newUser.email]);
+
+       return res;}
+
+     }
+
 
 
   Future<dynamic> getUser() async {
@@ -66,6 +79,7 @@ class DBProvider{
 
 
   }
+
 
 
 
