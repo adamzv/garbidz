@@ -16,9 +16,12 @@ class _GuidePageState extends State<Guide> {
   PageController pageController = PageController(initialPage: 0);
   int pageChange = 0;
   int idAddress = 0;
+  String address = "";
+  bool isAdress = false;
   var _isSelectedButtons = [false, false, false, false];
   var _containerTypes = ["zmesový komunálny odpad", "plasty", "papier a lepenka", "bioodpad"];
   var _finishedGuide = false;
+  Map _guideData = {};
 
   final TextEditingController _typeAheadController = TextEditingController();
 
@@ -32,6 +35,30 @@ class _GuidePageState extends State<Guide> {
     time = TimeOfDay.now();
   }
 
+  Future <void> _sendFinishedGuide(Map json) async {
+    try{
+      final url = Uri.parse('http://10.0.2.2:8080/api/auth/finish');
+      final response = await http.post(url,
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json; charset=UTF-8',
+            'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuaWdodHdpc2gudmFua29AZ21haWwuY29tIiwiZXhwIjoxNjUwNzY0NzA1fQ.7aOAM2ehmpruHUl8EFqiFzanZYhfEW4v1vRY6W5EmbY',
+          },
+          body: jsonEncode(json)
+      );
+      if(response.statusCode == 200){
+        print(response.body);
+      }else{
+        print(response.body);
+        print("fok");
+      }
+      print(json);
+    }catch(e){
+      print(e);
+    }
+
+  }
+
   void _finishGuide(){
     if(idAddress > 0){
       List positions = [];
@@ -43,10 +70,10 @@ class _GuidePageState extends State<Guide> {
       if(positions.length>0){
         Map json = {
           'addressId':idAddress,
-          'containers':positions.map((e) => {'addressId':idAddress, 'garbageType':_containerTypes[e]})
+          'containers': List.from(positions.map((e) => {'addressId':idAddress, 'garbageType':_containerTypes[e]})).toList()
         };
-        print(jsonEncode(json.toString()));
         setState(() {
+          _guideData = json;
           _finishedGuide = true;
         });
       }else{
@@ -56,9 +83,6 @@ class _GuidePageState extends State<Guide> {
       }
     }else{
     }
-  }
-  _sendJson(){
-    print("odoslane");
   }
   int _selectedIndex = 0;
   void _onItemTapped(int index) {
@@ -81,8 +105,6 @@ class _GuidePageState extends State<Guide> {
       }
     }
   }
-
-
   Future<Null> selectTime(BuildContext context) async{
     picked = await showTimePicker(context: context, initialTime: time,builder: (BuildContext context, Widget child) {
       return MediaQuery(
@@ -246,11 +268,21 @@ class _GuidePageState extends State<Guide> {
                                     _typeAheadController.text = suggestion.name;
                                     setState(() {
                                       idAddress = suggestion.id;
+                                      address = suggestion.name;
+                                      isAdress = true;
                                       _finishGuide();
                                     });
                                   },
                                 ),
-                              )
+                              ),
+                              SizedBox(height:15),
+                              isAdress ? Text("Vaša vybratá adresa je: $address",
+                                style: TextStyle(
+                                  color: Color.fromRGBO(63, 29, 90, 1.0),
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16.0,
+                                ),
+                              ) : SizedBox(height:0),
                             ],
                           ),
                         ),
@@ -536,7 +568,7 @@ class _GuidePageState extends State<Guide> {
 
                                       padding: EdgeInsets.symmetric(horizontal:20.0, vertical: 15.0),
                                     ),
-                                    onPressed: (){ _finishedGuide ? _sendJson() : null;
+                                    onPressed: (){ _finishedGuide ? _sendFinishedGuide(_guideData) : null;
                                     }
                                 ),
                               ),

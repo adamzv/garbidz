@@ -31,7 +31,7 @@ class _MapContainersState extends State<MapContainers> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromRGBO(189, 18, 121, 1.0),
+      backgroundColor: Color.fromRGBO(63, 29, 90, 1.0),
       body: SafeArea(
         child: FutureBuilder(
           future: httpService.getPosts(),
