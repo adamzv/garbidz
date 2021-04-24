@@ -1,10 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:http/http.dart' as http;
 import 'package:garbidz_app/components/AdressGuide.dart';
-import 'package:garbidz_app/components/AdressGuide.dart';
-import 'dart:convert';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:garbidz_app/pages/Home.dart';
 
 class Guide extends StatefulWidget {
   @override
@@ -15,7 +17,12 @@ class _GuidePageState extends State<Guide> {
   PageController pageController = PageController(initialPage: 0);
   int pageChange = 0;
   int idAddress = 0;
+  String address = "";
+  bool isAdress = false;
   var _isSelectedButtons = [false, false, false, false];
+  var _containerTypes = ["zmesový komunálny odpad", "plasty", "papier a lepenka", "bioodpad"];
+  var _finishedGuide = false;
+  Map _guideData = {};
 
   final TextEditingController _typeAheadController = TextEditingController();
 
@@ -27,6 +34,57 @@ class _GuidePageState extends State<Guide> {
     // TODO: implement initState
     super.initState();
     time = TimeOfDay.now();
+  }
+
+  Future <void> _sendFinishedGuide(Map json, BuildContext context) async {
+
+    try{
+      final url = Uri.parse('http://10.0.2.2:8080/api/auth/finish');
+      final response = await http.post(url,
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json; charset=UTF-8',
+            'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdXIudmFua29AZ21haWwuY29tIiwiZXhwIjoxNjUwODI4MDU5fQ.MoIGrsHY6BH6TD5epxr-iW-lRrht9O_So-5jPDD1rjI',
+          },
+          body: jsonEncode(json)
+      );
+      if(response.statusCode == 200){
+        print(response.body);
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => Home()));
+      }else{
+        print(response.body);
+        print("fok");
+      }
+      print(json);
+    }catch(e){
+      print(e);
+    }
+  }
+
+  void _finishGuide(){
+    if(idAddress > 0){
+      List positions = [];
+      for(int i=0; i<_isSelectedButtons.length; i++){
+        if(_isSelectedButtons[i]){
+          positions.add(i);
+        }
+      }
+      if(positions.length>0){
+        Map json = {
+          'addressId':idAddress,
+          'containers': List.from(positions.map((e) => {'addressId':idAddress, 'garbageType':_containerTypes[e]})).toList()
+        };
+        setState(() {
+          _guideData = json;
+          _finishedGuide = true;
+        });
+      }else{
+        setState(() {
+          _finishedGuide = false;
+        });
+      }
+    }else{
+    }
   }
   int _selectedIndex = 0;
   void _onItemTapped(int index) {
@@ -49,8 +107,6 @@ class _GuidePageState extends State<Guide> {
       }
     }
   }
-
-
   Future<Null> selectTime(BuildContext context) async{
     picked = await showTimePicker(context: context, initialTime: time,builder: (BuildContext context, Widget child) {
       return MediaQuery(
@@ -205,23 +261,30 @@ class _GuidePageState extends State<Guide> {
                                   suggestionsCallback: AddressApi.getAddressSuggestions,
                                   itemBuilder: (context, AdressGuide suggestion) {
                                     final address = suggestion;
-                                    return Padding(
-                                      padding: const EdgeInsets.all(10.0),
-                                      child: ListTile(
-                                        leading: Icon(Icons.location_pin),
-                                        title: Text(address.name),
-                                      ),
+                                    return ListTile(
+                                      leading: Icon(Icons.location_pin),
+                                      title: Text(address.name),
                                     );
                                   },
                                   onSuggestionSelected: (suggestion) {
                                     _typeAheadController.text = suggestion.name;
                                     setState(() {
                                       idAddress = suggestion.id;
+                                      address = suggestion.name;
+                                      isAdress = true;
+                                      _finishGuide();
                                     });
-                                    print(idAddress.toString());
                                   },
                                 ),
-                              )
+                              ),
+                              SizedBox(height:15),
+                              isAdress ? Text("Vaša vybratá adresa je: $address",
+                                style: TextStyle(
+                                  color: Color.fromRGBO(63, 29, 90, 1.0),
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16.0,
+                                ),
+                              ) : SizedBox(height:0),
                             ],
                           ),
                         ),
@@ -305,6 +368,7 @@ class _GuidePageState extends State<Guide> {
                                         setState(() {
                                           _isSelectedButtons[0] = !_isSelectedButtons[0];
                                         });
+                                        _finishGuide();
                                       }
                                     ),
                                   ),
@@ -336,6 +400,7 @@ class _GuidePageState extends State<Guide> {
                                           setState(() {
                                             _isSelectedButtons[1] = !_isSelectedButtons[1];
                                           });
+                                          _finishGuide();
                                         }
                                     ),
                                   ),
@@ -367,6 +432,7 @@ class _GuidePageState extends State<Guide> {
                                           setState(() {
                                             _isSelectedButtons[2] = !_isSelectedButtons[2];
                                           });
+                                          _finishGuide();
                                         }
                                     ),
                                   ),
@@ -398,6 +464,7 @@ class _GuidePageState extends State<Guide> {
                                           setState(() {
                                             _isSelectedButtons[3] = !_isSelectedButtons[3];
                                           });
+                                          _finishGuide();
                                         }
                                     ),
                                   ),
@@ -444,7 +511,7 @@ class _GuidePageState extends State<Guide> {
                             children: [
                               Center(
                                 child: Container(
-                                    width: 200,
+                                    width: 150,
                                     child: Image.asset('assets/guide/04.png')),
                               ),
                               SizedBox(height: 20.0),
@@ -483,7 +550,39 @@ class _GuidePageState extends State<Guide> {
                                     }
                                 ),
                               ),
-                              SizedBox(height: 30.0)
+                              SizedBox(height: 20.0),
+                              SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                    child: Text("Dokončiť"),
+                                    style: ElevatedButton.styleFrom(
+                                      shape: new RoundedRectangleBorder(
+                                        borderRadius: new BorderRadius.circular(8.0),
+                                      ),
+                                      textStyle: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontSize: 18.0,
+                                      ),
+                                      primary: _finishedGuide ? Color.fromRGBO(189, 18, 121, 1.0) : Color.fromRGBO(230, 230, 230, 0.5),
+                                      onPrimary: _finishedGuide ? Colors.white : Color.fromRGBO(189, 18, 121, 1.0),
+                                      alignment: Alignment.center,
+                                      elevation: 0,
+
+                                      padding: EdgeInsets.symmetric(horizontal:20.0, vertical: 15.0),
+                                    ),
+                                    onPressed: (){ _finishedGuide ? _sendFinishedGuide(_guideData,  context) : null;
+                                    }
+                                ),
+                              ),
+                              SizedBox(height: 10.0),
+                              _finishedGuide ? SizedBox(height: 0.0) : Text("Najprv si musíte zvoliť adresu a aspoň jeden kontajner",
+                                style: TextStyle(
+                                  color: Color.fromRGBO(63, 29, 90, 1.0),
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14.0,
+                                ),
+                              ),
+                              SizedBox(height: 30.0),
                             ],
                           ),
                         ),
@@ -513,7 +612,8 @@ class _GuidePageState extends State<Guide> {
             fontFamily: 'Poppins',
             fontSize: 13.0,
             fontWeight: FontWeight.w400,
-            color: Color.fromRGBO(255, 255, 255, 1.0)),
+            color: Color.fromRGBO(255, 255, 255, 1.0)
+        ),
         selectedLabelStyle: TextStyle(
             fontFamily: 'Poppins',
             fontSize: 13.0,
