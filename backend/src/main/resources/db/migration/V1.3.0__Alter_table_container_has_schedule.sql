@@ -1,0 +1,1 @@
+ALTER TABLE `container_has_schedule` ADD `id` BIGINT NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`id`);

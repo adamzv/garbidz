@@ -11,14 +11,32 @@ import java.util.Set;
 public class ContainerSchedule implements Serializable {
 
     @Id
-    @ManyToOne(optional = false, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(optional = false, fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name = "id_container")
     private Container container;
 
-    @Id
     @ManyToOne(optional = false)
     @JoinColumn(name = "id_schedule")
     private Schedule schedule;
+
+    public ContainerSchedule() {
+    }
+
+    public ContainerSchedule(Container container, Schedule schedule) {
+        this.container = container;
+        this.schedule = schedule;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public Container getContainer() {
         return container;
