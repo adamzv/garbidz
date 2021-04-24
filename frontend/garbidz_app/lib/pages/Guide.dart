@@ -6,6 +6,7 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:http/http.dart' as http;
 import 'package:garbidz_app/components/AdressGuide.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:garbidz_app/pages/Home.dart';
 
 class Guide extends StatefulWidget {
   @override
@@ -35,19 +36,21 @@ class _GuidePageState extends State<Guide> {
     time = TimeOfDay.now();
   }
 
-  Future <void> _sendFinishedGuide(Map json) async {
+  Future <void> _sendFinishedGuide(Map json, BuildContext context) async {
+
     try{
       final url = Uri.parse('http://10.0.2.2:8080/api/auth/finish');
       final response = await http.post(url,
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json; charset=UTF-8',
-            'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuaWdodHdpc2gudmFua29AZ21haWwuY29tIiwiZXhwIjoxNjUwNzY0NzA1fQ.7aOAM2ehmpruHUl8EFqiFzanZYhfEW4v1vRY6W5EmbY',
+            'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdXIudmFua29AZ21haWwuY29tIiwiZXhwIjoxNjUwODI4MDU5fQ.MoIGrsHY6BH6TD5epxr-iW-lRrht9O_So-5jPDD1rjI',
           },
           body: jsonEncode(json)
       );
       if(response.statusCode == 200){
         print(response.body);
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => Home()));
       }else{
         print(response.body);
         print("fok");
@@ -56,7 +59,6 @@ class _GuidePageState extends State<Guide> {
     }catch(e){
       print(e);
     }
-
   }
 
   void _finishGuide(){
@@ -568,7 +570,7 @@ class _GuidePageState extends State<Guide> {
 
                                       padding: EdgeInsets.symmetric(horizontal:20.0, vertical: 15.0),
                                     ),
-                                    onPressed: (){ _finishedGuide ? _sendFinishedGuide(_guideData) : null;
+                                    onPressed: (){ _finishedGuide ? _sendFinishedGuide(_guideData,  context) : null;
                                     }
                                 ),
                               ),
