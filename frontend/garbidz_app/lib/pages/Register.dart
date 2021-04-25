@@ -1,6 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:garbidz_app/pages/Login.dart';
+import 'package:garbidz_app/pages/Confirm.dart';
 import 'dart:math' as math;
+import 'package:http/http.dart' as http;
+import 'dart:async';
+import 'dart:convert';
+
+
+Future RegisterRequest(String password, String username, String email, String surname) async {
+  String uri = "10.0.2.2:8080";
+  final response = await http.post(
+    Uri.http(uri, "/api/auth/signup"),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    body: jsonEncode(<String, String>{
+      'email': email,
+      'name': username,
+      'password': password,
+      'surname': surname,
+    }),
+  );
+
+  if (response.statusCode == 200) {
+     print("we got this");
+    }
+
+   else {
+
+    final  snackBar = SnackBar(
+        content: Text('Vyplňte všetky polia !'));
+   return snackBar;
+
+  }
+
+}
+
+
+
+
 
 class Register extends StatefulWidget {
   @override
@@ -10,6 +48,41 @@ class Register extends StatefulWidget {
 class _RegisterPageState extends State<Register> {
   bool _isObscure = true;
   bool _isObscure2 = true;
+  bool _validate = false;
+  bool _validatepass = false;
+  final TextEditingController _controllerName = TextEditingController();
+  final TextEditingController _controllerSurname = TextEditingController();
+  final TextEditingController _controllerEmail = TextEditingController();
+  final TextEditingController _controllerPassword = TextEditingController();
+  final TextEditingController _controllerPassword2 = TextEditingController();
+
+
+  bool validate(String name, String surname, String email, String password, String password2 ){
+
+    if(name.isEmpty ||surname.isEmpty||email.isEmpty||password.isEmpty||password2.isEmpty){
+       setState(() {
+         _validate = true;
+       });
+       return false;
+    }
+    setState(() {
+      _validate = false;
+    });
+      return true;
+  }
+
+  bool passwordConfirm(String password, String password2){
+    if(password == password2){
+     setState(() {
+       _validatepass =false;
+     });
+      return true;
+
+    }setState(() {
+      _validatepass =true;
+    });
+    return false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -151,12 +224,15 @@ class _RegisterPageState extends State<Register> {
                           )),
                       Padding(
                         padding: const EdgeInsets.only(
-                            left: 15.0, right: 15.0, top: 10, bottom: 0),
+                            left: 15.0, right: 15.0, top: 0, bottom: 0),
                         child: Row(
                           children: [
                             Expanded(
                               child: TextField(
+                                controller: _controllerName,
                                 decoration: InputDecoration(
+                                    errorText: _validate ? '': null,
+                                    errorStyle: TextStyle(height: 0),
                                     border: UnderlineInputBorder(),
                                     labelText: 'Meno',
                                     prefixIcon:
@@ -169,7 +245,10 @@ class _RegisterPageState extends State<Register> {
                             ),
                             Expanded(
                                 child: TextField(
+                                  controller: _controllerSurname,
                               decoration: InputDecoration(
+                                  errorText: _validate ? '': null,
+                                  errorStyle: TextStyle(height: 0),
                                   border: UnderlineInputBorder(),
                                   labelText: 'Priezvisko',
                                   hintText: 'Vložte priezvisko'),
@@ -180,9 +259,12 @@ class _RegisterPageState extends State<Register> {
                       Padding(
                         //padding: const EdgeInsets.only(left:15.0,right: 15.0,top:0,bottom: 0),
                         padding: const EdgeInsets.only(
-                            left: 15.0, right: 15.0, top: 10, bottom: 0),
+                            left: 15.0, right: 15.0, top: 0, bottom: 0),
                         child: TextField(
+                          controller: _controllerEmail,
                           decoration: InputDecoration(
+                              errorText: _validate ? '': null,
+                              errorStyle: TextStyle(height: 0),
                               border: UnderlineInputBorder(),
                               labelText: 'Email',
                               prefixIcon: Icon(Icons.email),
@@ -191,11 +273,14 @@ class _RegisterPageState extends State<Register> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(
-                            left: 15.0, right: 15.0, top: 15, bottom: 0),
+                            left: 15.0, right: 15.0, top: 0, bottom: 0),
                         //padding: EdgeInsets.symmetric(horizontal: 15),
                         child: TextField(
                           obscureText: _isObscure,
+                          controller: _controllerPassword,
                           decoration: InputDecoration(
+                              errorText: _validate ? '': null,
+                              errorStyle: TextStyle(height: 0),
                               hoverColor: Color.fromRGBO(63, 29, 90, 1.0),
                               border: UnderlineInputBorder(),
                               labelText: 'Heslo',
@@ -214,11 +299,14 @@ class _RegisterPageState extends State<Register> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(
-                            left: 15.0, right: 15.0, top: 15, bottom: 0),
+                            left: 15.0, right: 15.0, top: 0, bottom: 0),
                         //padding: EdgeInsets.symmetric(horizontal: 15),
                         child: TextField(
                           obscureText: _isObscure2,
+                          controller: _controllerPassword2,
                           decoration: InputDecoration(
+                              errorText: _validate ? '': null,
+                              errorStyle: TextStyle(height: 0),
                               hoverColor: Color.fromRGBO(63, 29, 90, 1.0),
                               border: UnderlineInputBorder(),
                               labelText: 'Zopakujte heslo',
@@ -245,7 +333,34 @@ class _RegisterPageState extends State<Register> {
                               color: Color.fromRGBO(189, 18, 121, 1.0),
                               borderRadius: BorderRadius.circular(10)),
                           child: TextButton(
-                            onPressed: () {},
+                            onPressed: () async {
+                              if(validate(_controllerPassword.text,
+                                  _controllerName.text,
+                                  _controllerEmail.text,
+                                  _controllerSurname.text,
+                              _controllerPassword2.text)){
+                                if(passwordConfirm(_controllerPassword.text, _controllerPassword2.text)) {
+                                  await RegisterRequest(_controllerPassword.text, _controllerName.text, _controllerEmail.text, _controllerSurname.text);
+
+
+                                    Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => Confirm(),
+                                        ));
+
+                                }else {
+                                  final snackBar = SnackBar(
+                                      content: Text('Heslá sa nezhodujú!'));
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      snackBar);
+                                }
+                              }else{
+                              final snackBar = SnackBar(
+                                  content: Text('Vyplňte všetky polia !'));
+                              ScaffoldMessenger.of(context).showSnackBar(snackBar);}
+
+                            },
                             child: Text(
                               'Zaregistrovať sa',
                               style: TextStyle(
