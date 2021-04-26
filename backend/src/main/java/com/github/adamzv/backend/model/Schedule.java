@@ -1,9 +1,11 @@
 package com.github.adamzv.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.sun.istack.NotNull;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,9 +18,10 @@ public class Schedule{
     private Long id;
 
     @NotNull
-    private LocalDateTime datetime;
+    private Date datetime;
 
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL)
+    @JsonBackReference
     private Set<ContainerSchedule> containerSchedule = new HashSet<>();
 
     public Long getId() {
@@ -29,11 +32,18 @@ public class Schedule{
         this.id = id;
     }
 
-    public LocalDateTime getDatetime() {
+    public Schedule() {
+    }
+
+    public Schedule(Date datetime) {
+        this.datetime = datetime;
+    }
+
+    public Date getDatetime() {
         return datetime;
     }
 
-    public void setDatetime(LocalDateTime datetime) {
+    public void setDatetime(Date datetime) {
         this.datetime = datetime;
     }
 

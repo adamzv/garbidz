@@ -25,6 +25,7 @@ public class Container{
     private ContainerType type;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "schedule", cascade = CascadeType.ALL)
+    @JsonBackReference
     private Set<ContainerSchedule> containerSchedule;
 
     @JsonBackReference(value = "container-user")
