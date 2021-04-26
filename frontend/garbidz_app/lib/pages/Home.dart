@@ -10,16 +10,20 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  static bool isLogged = false;
+  static bool isLogged = true;
   int _selectedIndex = 0;
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
-
   }
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
      List<Widget> _notLogged = <Widget>[
