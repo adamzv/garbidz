@@ -101,7 +101,7 @@ public class UserService {
                 .collect(Collectors.toSet());
         user.setContainerUser(set);
         set.forEach(s -> containerUserRepository.save(s));
-        return user;
+        return userRepository.save(user);
     }
 
     public User upgradeRole(Long id, ERole role) {
