@@ -10,7 +10,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  static bool isLogged = true;
+  static bool isLogged = false;
   int _selectedIndex = 0;
 
   void _onItemTapped(int index) {

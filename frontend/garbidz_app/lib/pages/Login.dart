@@ -308,6 +308,9 @@ class _LoginState extends State<Login> {
                                     MaterialPageRoute(
                                       builder: (context) => Guide(),
                                     ));
+
+
+
                               }else if(_address ==1){
                                 final snackBar = SnackBar(
                                     content: Text('Zlé prihlasovacie meno alebo heslo!'));

@@ -28,9 +28,7 @@ Future RegisterRequest(String password, String username, String email, String su
 
    else {
 
-    final  snackBar = SnackBar(
-        content: Text('Vyplňte všetky polia !'));
-   return snackBar;
+    print("Ups" + response.toString());
 
   }
 

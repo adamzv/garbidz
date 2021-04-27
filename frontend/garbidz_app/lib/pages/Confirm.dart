@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:math' as math;
 import 'dart:convert';
-
+import 'package:garbidz_app/pages/Login.dart';
 
 
 
@@ -20,12 +20,12 @@ Future ConfirmRequest(String token) async {
 
 
   if (response.statusCode == 200) {
-    print("we got this");
+    return true;
   }
 
   else {
 
-    print("test");
+   return false;
 
   }
 
@@ -174,8 +174,19 @@ class _ConfirmPageState extends State<Confirm> {
                               borderRadius: BorderRadius.circular(10)),
                           child: TextButton(
                             onPressed: () async {
-                                  await ConfirmRequest(_controllertoken.text);
+                                  if(await ConfirmRequest(_controllertoken.text)) {
+                                    Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => Login(),
+                                        ));
+                                  }else{
 
+                                    final snackBar = SnackBar(
+                                        content: Text('Niekde nastala chyba.'));
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        snackBar);
+                                  }
                             },
                             child: Text(
                               'Odoslať',
