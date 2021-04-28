@@ -33,6 +33,8 @@ dependencies:
   flutter_typeahead: ^1.7.0
   http: ^0.13.1
   fluttertoast: ^8.0.6
+  scroll_to_index: ^1.0.6
+  intl: ^0.16.1
 
 dev_dependencies:
   flutter_test:
