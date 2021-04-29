@@ -1,14 +1,14 @@
 import 'dart:convert';
 
-Container containerFromJson(String str) => Container.fromJson(json.decode(str));
+Kontainer KontainerFromJson(String str) => Kontainer.fromJson(json.decode(str));
 
-String containerToJson(Container data) => json.encode(data.toJson());
+String KontainerToJson(Kontainer data) => json.encode(data.toJson());
 
-class Container {
+class Kontainer {
   final String type;
   final String user_email;
 
-  Container({this.type, this.user_email});
+  Kontainer({this.type, this.user_email});
 
   Map<String, dynamic> toJson() =>{
 
@@ -17,7 +17,7 @@ class Container {
   };
 
 
-  factory Container.fromJson(Map<String, dynamic> json) => Container(
+  factory Kontainer.fromJson(Map<String, dynamic> json) => Kontainer(
 
     type: json["type"],
     user_email: json["user_email"],
@@ -25,8 +25,8 @@ class Container {
   );
 
 
-  factory Container.fromMap(Map<String, dynamic> json)=>
-      new Container (
+  factory Kontainer.fromMap(Map<String, dynamic> json)=>
+      new Kontainer (
         type: json["type"],
         user_email: json["user_email"],
 

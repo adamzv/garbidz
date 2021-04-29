@@ -65,7 +65,7 @@ class _MapContainersState extends State<MapContainers> {
                         onPressed: (){
                           showModalBottomSheet(
                               context: context,
-                              builder: (builder){ return MarkDetail(address: address.address+", "+address.town['town'], containers: []); }
+                              builder: (builder){ return MarkDetail(address: address.address+", "+address.town['town'], id: address.id.toString(),); }
                           );
                         },
                         color: Colors.pink,

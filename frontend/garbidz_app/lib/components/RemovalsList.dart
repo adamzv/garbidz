@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:garbidz_app/components/globals.dart' as globals;
 import 'package:http/http.dart' as http;
 class RemovalsList{
   String garbageType;
@@ -11,7 +12,7 @@ class RemovalsList{
 
 class RemovalsApi{
   static Future<List<RemovalsList>> getRemovalsList(int id) async {
-  final url = Uri.parse('http://10.0.2.2:8080/api/schedules/user/'+id.toString());
+  final url = Uri.parse('http://'+globals.uri+'/api/schedules/user/'+id.toString());
   final response = await http.get(url,
       headers: {
         'Content-Type': 'application/json',
