@@ -29,6 +29,7 @@ class DBProvider{
     return await openDatabase(path, version: 1, onOpen: (db) {},
       onCreate: (Database db, int version) async {
         await db.execute("CREATE TABLE users ("
+            "id INTEGER,"
             "first_name TEXT PRIMARY KEY,"
             "last_name TEXT,"
             "email TEXT,"
@@ -55,17 +56,17 @@ class DBProvider{
      if(count ==0){
     var res = await db.rawInsert('''
       INSERT INTO users(
-       first_name, last_name, email, token, time) 
-       VALUES(?,?,?,?,?)
-    ''', [newUser.first_name, newUser.last_name, newUser.email, newUser.token, newUser.time]);
+       id, first_name, last_name, email, token, time) 
+       VALUES(?,?,?,?,?,?)
+    ''', [newUser.id, newUser.first_name, newUser.last_name, newUser.email, newUser.token, newUser.time]);
 
     return res;}
      else{
        var res = await db.rawUpdate('''
       UPDATE users SET
-       first_name = ?, last_name = ?, email = ?, token = ?, time = ?
+       id = ?, first_name = ?, last_name = ?, email = ?, token = ?, time = ?
        
-      WHERE email = ?''', [newUser.first_name, newUser.last_name, newUser.email, newUser.token,newUser.time, newUser.email]);
+      WHERE email = ?''', [newUser.id,newUser.first_name, newUser.last_name, newUser.email, newUser.token,newUser.time, newUser.email]);
 
        return res;}
 
@@ -103,7 +104,20 @@ class DBProvider{
 
 
   }
+// TODO: return containers
+  Future<dynamic> getContainers(String email) async {
+    final db = await database;
 
+    var res = await db.rawQuery("SELECT * FROM containers WHERE email ="+ email);
+    if(res.length == 0){
+      return null;
+    }else {
+      var resMap = res[0];
+      return resMap.isNotEmpty ? resMap : Null;
+    }
+
+
+  }
 
 
 

@@ -5,12 +5,13 @@ import 'package:garbidz_app/pages/Removals.dart';
 import 'package:garbidz_app/pages/Settings.dart';
 
 class Home extends StatefulWidget {
+  static bool isLogged = false;
   @override
   _HomeState createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
-  static bool isLogged = false;
+
   int _selectedIndex = 0;
 
   void _onItemTapped(int index) {
@@ -63,10 +64,10 @@ class _HomeState extends State<Home> {
        ];
 
 
-    List _items = isLogged ? itemsLogged : itemsNotLogged;
+    List _items = Home.isLogged ? itemsLogged : itemsNotLogged;
 
     return Scaffold(
-        body: isLogged ? _logged[_selectedIndex] : _notLogged[_selectedIndex],
+        body: Home.isLogged ? _logged[_selectedIndex] : _notLogged[_selectedIndex],
         bottomNavigationBar: BottomNavigationBar(
           items: _items,
           unselectedLabelStyle: TextStyle(

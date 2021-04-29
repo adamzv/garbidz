@@ -23,11 +23,11 @@ Future RegisterRequest(String password, String username, String email, String su
   );
 
   if (response.statusCode == 200) {
-     print("we got this");
+     print("registered");
     }
 
    else {
-
+  // TODO: VALIDATION
     print("Ups" + response.toString());
 
   }
