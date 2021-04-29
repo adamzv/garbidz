@@ -30,11 +30,11 @@ class DBProvider{
       onCreate: (Database db, int version) async {
         await db.execute("CREATE TABLE users ("
             "id INTEGER,"
-            "first_name TEXT PRIMARY KEY,"
+            "first_name TEXT,"
             "last_name TEXT,"
-            "email TEXT,"
+            "email TEXT PRIMARY KEY,"
             "token TEXT,"
-            "time DATETIME NULL"
+            "time TEXT NULL"
             ")");
         await db.execute("CREATE TABLE containers ("
             "id INTEGER PRIMARY KEY,"
@@ -47,6 +47,16 @@ class DBProvider{
     );
   }
 
+  newTime(String email,String time) async {
+    final db = await database;
+    var res = await db.rawUpdate('''
+      UPDATE users SET
+        time = ?
+       
+      WHERE email = ?''', [time, email]);
+
+    return res;
+  }
 
   newUser(User newUser) async{
     final db = await database;
@@ -73,7 +83,7 @@ class DBProvider{
      }
 
 
-  newContainer(Container newContainer) async{
+  newContainer(Kontainer newContainer) async{
     final db = await database;
     var table = await db.rawQuery("SELECT MAX(id)+1 as id FROM containers");
     int id = table.first["id"];

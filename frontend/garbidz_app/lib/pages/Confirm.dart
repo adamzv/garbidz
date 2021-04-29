@@ -4,7 +4,7 @@ import 'dart:async';
 import 'dart:math' as math;
 import 'dart:convert';
 import 'package:garbidz_app/pages/Login.dart';
-
+import 'package:garbidz_app/components/globals.dart' as globals;
 
 
 
@@ -12,7 +12,7 @@ import 'package:garbidz_app/pages/Login.dart';
 Future ConfirmRequest(String token) async {
   String uri = "10.0.2.2:8080";
   final response = await http.get(
-    Uri.http(uri, "/api/auth/confirm",{'token': token}),
+    Uri.http(globals.uri, "/api/auth/confirm",{'token': token}),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     },

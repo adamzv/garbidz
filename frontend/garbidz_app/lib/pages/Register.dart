@@ -5,12 +5,13 @@ import 'dart:math' as math;
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
+import 'package:garbidz_app/components/globals.dart' as globals;
 
 
 Future RegisterRequest(String password, String username, String email, String surname) async {
   String uri = "10.0.2.2:8080";
   final response = await http.post(
-    Uri.http(uri, "/api/auth/signup"),
+    Uri.http(globals.uri, "/api/auth/signup"),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     },

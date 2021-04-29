@@ -11,6 +11,7 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:garbidz_app/components/globals.dart' as globals;
 
 
 
@@ -33,7 +34,7 @@ class _LoginState extends State<Login> {
   Future login(String password, String username) async {
     String uri = "10.0.2.2:8080";
     final response = await http.post(
-      Uri.http(uri, "/api/auth/signin"),
+      Uri.http(globals.uri, "/api/auth/signin"),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -46,19 +47,17 @@ class _LoginState extends State<Login> {
     if (response.statusCode == 200) {
       if( jsonDecode(response.body)['address']== null){
             _address = 0;
+            print(_address);
+           /*if((jsonDecode(response.body)['containerUser']).length == 0){
 
-           if((jsonDecode(response.body)['containerUser']).length == 0){
-
-           }
-
-
+           }*/
       }
 
 
       var newUser = User(id: jsonDecode(response.body)['id'], first_name: jsonDecode(response.body)['name'], last_name: jsonDecode(response.body)['surname'], email: jsonDecode(response.body)['email'], token: jsonDecode(response.body)['token']['token'] );
       return DBProvider.db.newUser(newUser);
     } else {
-
+      print(response.body);
       _address = 1;
 
     }
@@ -305,11 +304,11 @@ class _LoginState extends State<Login> {
                                 await login(_controller2.text,_controller.text);
 
                               if(_address == 0) {
-                               // Navigator.push(
-                                //    context,
-                                 //   MaterialPageRoute(
-                                 //     builder: (context) => Guide(),
-                                 //   ));
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => Guide(),
+                                    ));
 
 
 
