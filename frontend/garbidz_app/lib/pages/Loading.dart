@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:garbidz_app/components/Database.dart';
 import 'package:garbidz_app/components/User_model.dart';
 import 'package:garbidz_app/pages/Home.dart';
+import 'package:garbidz_app/components/globals.dart' as globals;
 
 class Loading extends StatefulWidget {
   @override
@@ -14,6 +15,9 @@ class _LoadingState extends State<Loading> with SingleTickerProviderStateMixin{
   void setupWorldTime() async{
    final data = await  DBProvider.db.getUser();
    if(data!=null){
+     User user = User.fromMap(data);
+    globals.token = user.token;
+    globals.idUser = user.id.toString();
      Home.isLogged = true;
    }
    await Future.delayed(Duration(seconds: 4));
@@ -25,14 +29,12 @@ class _LoadingState extends State<Loading> with SingleTickerProviderStateMixin{
     super.initState();
     _controller = AnimationController(vsync: this, duration: Duration(seconds: 2))..repeat();
     setupWorldTime();
-
   }
   @override
   void dispose() {
     _controller.dispose();
     // TODO: implement dispose
     super.dispose();
-
   }
   @override
   Widget build(BuildContext context) {

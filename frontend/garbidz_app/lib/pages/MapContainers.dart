@@ -22,11 +22,6 @@ class MapContainers extends StatefulWidget {
 }
 
 class _MapContainersState extends State<MapContainers> {
-  List<MarkPoint> markers = [
-    MarkPoint(address: '7. pešieho pluku, Nitra', lng: 48.307027, lnt: 18.085075, containers: [{'type':'Papier a lepenka'},{'id':'1', 'type':'Plast'},{'type':'Zmesový komunálny odpad'}]),
-    MarkPoint(address: 'Palánok, Nitra', lng: 48.311383, lnt: 18.082601, containers: [{'type':'Papier a lepenka'},{'id':'1', 'type':'Plast'}]),
-    MarkPoint(address: 'Hlboká 63, Nové Zámky', lng: 48.294796, lnt: 18.072434, containers: [{'type':'Papier a lepenka'}]),
-  ];
   final HttpService httpService = HttpService();
   @override
   Widget build(BuildContext context) {
@@ -82,14 +77,12 @@ class _MapContainersState extends State<MapContainers> {
                         borderStrokeWidth: 3),
                         builder: (context, markers) {
                         return FloatingActionButton(
-            child: Text(markers.length.toString()),
-            backgroundColor: Colors.pink,
-            onPressed: null,
-            );
-            },
-
+                          child: Text(markers.length.toString()),
+                          backgroundColor: Colors.pink,
+                          onPressed: null,
+                        );
+                        },
                 ),
-
               ],
             );
             }else {

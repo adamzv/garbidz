@@ -7,6 +7,7 @@ import 'dart:io';
 import 'dart:async';
 
 class HttpService{
+  static String token="";
   final String postsUrl = "http://"+globals.uri+"/api/addresses?size=2000";
   Future <List<Address>> getPosts()async{
     final res = await http.get(
@@ -14,7 +15,6 @@ class HttpService{
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json; charset=UTF-8',
-          'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdXIudmFua29AZ21haWwuY29tIiwiZXhwIjoxNjUxMTA2MzU5fQ.0N2xg5-q0L-w_G1kzZkNVaXDnxlbcF9dDNTrjLR1sCs',
         });
 
     if(res.statusCode == 200){

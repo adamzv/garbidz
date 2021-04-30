@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:garbidz_app/components/Database.dart';
+import 'package:garbidz_app/components/User_model.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:garbidz_app/components/RemovalsList.dart';
 import 'package:intl/intl.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
+import 'package:garbidz_app/components/globals.dart' as globals;
 class Removals extends StatefulWidget {
   @override
   _RemovalsState createState() => _RemovalsState();
@@ -11,6 +14,11 @@ class Removals extends StatefulWidget {
 
 class _RemovalsState extends State<Removals> {
   AutoScrollController controller;
+  Future<List>getDbData() async{
+    final data = await DBProvider.db.getUser();
+    User user = User.fromMap(data);
+    return [user.id,user.token];
+  }
 
   Color getColorOfContainer(String type){
     Color color ;
@@ -73,8 +81,8 @@ class _RemovalsState extends State<Removals> {
             shrinkWrap: true,
           children: [
             FutureBuilder(
-            future: RemovalsApi.getRemovalsList(1),
-            builder: (BuildContext context, AsyncSnapshot<List<RemovalsList>> snapshot){
+            future:RemovalsApi.getRemovalsList(globals.idUser, globals.token) ,
+            builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot){
             if(snapshot.hasData){
              List<RemovalsList> rem = snapshot.data;
              return Padding(
@@ -177,7 +185,15 @@ class _RemovalsState extends State<Removals> {
                ),
              );
             }else {
-            return Center(child: CircularProgressIndicator());
+            return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      CircularProgressIndicator()
+                    ]
+                )
+            );
              }
               }
             ),
