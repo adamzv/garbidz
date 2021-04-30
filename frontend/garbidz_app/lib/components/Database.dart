@@ -34,6 +34,7 @@ class DBProvider{
             "last_name TEXT,"
             "email TEXT PRIMARY KEY,"
             "token TEXT,"
+            "address TEXT NULL,"
             "time TEXT NULL"
             ")");
         await db.execute("CREATE TABLE containers ("
@@ -58,6 +59,17 @@ class DBProvider{
     return res;
   }
 
+  newAddress(String email,String address) async {
+    final db = await database;
+    var res = await db.rawUpdate('''
+      UPDATE users SET
+        address = ?
+       
+      WHERE email = ?''', [address, email]);
+
+    return res;
+  }
+
   newUser(User newUser) async{
     final db = await database;
     String querry = "SELECT COUNT(email) FROM users WHERE email='"+ newUser.email+"'";
@@ -66,21 +78,46 @@ class DBProvider{
      if(count ==0){
     var res = await db.rawInsert('''
       INSERT INTO users(
-       id, first_name, last_name, email, token, time) 
-       VALUES(?,?,?,?,?,?)
-    ''', [newUser.id, newUser.first_name, newUser.last_name, newUser.email, newUser.token, newUser.time]);
+       id, first_name, last_name, email, token, address, time) 
+       VALUES(?,?,?,?,?,?,?)
+    ''', [newUser.id, newUser.first_name, newUser.last_name, newUser.email, newUser.token,newUser.address, newUser.time]);
 
     return res;}
      else{
        var res = await db.rawUpdate('''
       UPDATE users SET
-       id = ?, first_name = ?, last_name = ?, email = ?, token = ?, time = ?
+       id = ?, first_name = ?, last_name = ?, email = ?, token = ?, address = ?, time = ?
        
-      WHERE email = ?''', [newUser.id,newUser.first_name, newUser.last_name, newUser.email, newUser.token,newUser.time, newUser.email]);
+      WHERE email = ?''', [newUser.id,newUser.first_name, newUser.last_name, newUser.email, newUser.token,newUser.address,newUser.time, newUser.email]);
 
        return res;}
 
      }
+
+
+
+  dropUsers() async{
+    final db = await database;
+
+    var res = await db.delete('users');
+    var res2 = await db.delete('containers');
+
+    return res;
+
+
+  }
+
+  dropContainers() async{
+    final db = await database;
+
+
+    var res = await db.delete('containers');
+
+    return res;
+
+
+  }
+
 
 
   newContainer(Kontainer newContainer) async{

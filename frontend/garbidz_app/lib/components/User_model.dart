@@ -10,9 +10,10 @@ class User {
   final String last_name;
   final String email;
   final String token;
+  final String address;
   final String time;
 
-  User({this.id,this.first_name, this.last_name, this.email, this.token, this.time});
+  User({this.id,this.first_name, this.last_name, this.email, this.token, this.address, this.time});
 
   Map<String, dynamic> toJson() =>{
       'id': id,
@@ -20,6 +21,7 @@ class User {
       'last_name': last_name,
       'email': email,
       'token': token,
+      'address':address,
       'time': time,
     };
 
@@ -30,6 +32,7 @@ class User {
       last_name: json["surname"],
       email: json["email"],
       token: json["token"]["token"],
+      address: json["address"]["address"],
       time: null,
     );
 
@@ -41,6 +44,7 @@ class User {
         last_name: json["last_name"],
         email: json["email"],
         token: json["token"],
+        address: json["address"],
         time: null,
       );
 }

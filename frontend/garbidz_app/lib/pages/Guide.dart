@@ -72,12 +72,12 @@ class _GuidePageState extends State<Guide> {
         }
 
         DBProvider.db.newTime(email, (time.hour).toString()+":"+(time.minute).toString());
+        DBProvider.db.newAddress(email, address);
         print(response.body);
         Home.isLogged = true;
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => Home()));
       }else{
         print(response.body);
-        print("fok");
       }
       print(json);
     }catch(e){

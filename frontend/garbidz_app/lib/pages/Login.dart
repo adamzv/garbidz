@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:garbidz_app/components/Container_model.dart';
 import 'package:garbidz_app/components/User_model.dart';
 import 'package:garbidz_app/pages/Register.dart';
 import 'package:garbidz_app/pages/Guide.dart';
@@ -33,10 +34,12 @@ class _LoginState extends State<Login> {
 
   Future login(String password, String username) async {
     String uri = "10.0.2.2:8080";
+    String address = null;
     final response = await http.post(
       Uri.http(globals.uri, "/api/auth/signin"),
       headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, String>{
         'password': password,
@@ -47,14 +50,24 @@ class _LoginState extends State<Login> {
     if (response.statusCode == 200) {
       if( jsonDecode(response.body)['address']== null){
             _address = 0;
-            print(_address);
-           /*if((jsonDecode(response.body)['containerUser']).length == 0){
 
-           }*/
+
+           if((jsonDecode(response.body)['containerUser']).length != 0){
+
+           }
+      }else{
+        address = jsonDecode(response.body)['address']['address'];
+          for(int i =0; i<(jsonDecode(response.body)['containerUser']).length; i++){
+            Kontainer container = Kontainer(type:jsonDecode(response.body)['containerUser'][i]['container']['garbageType'], user_email: jsonDecode(response.body)['email']);
+            DBProvider.db.newContainer(container);
+
+
+    }
       }
+      DBProvider.db.dropContainers();
+      DBProvider.db.dropUsers();
 
-
-      var newUser = User(id: jsonDecode(response.body)['id'], first_name: jsonDecode(response.body)['name'], last_name: jsonDecode(response.body)['surname'], email: jsonDecode(response.body)['email'], token: jsonDecode(response.body)['token']['token'] );
+      var newUser = User(id: jsonDecode(response.body)['id'], first_name: jsonDecode(response.body)['name'], last_name: jsonDecode(response.body)['surname'], email: jsonDecode(response.body)['email'], token: jsonDecode(response.body)['token']['token'], address: address );
       return DBProvider.db.newUser(newUser);
     } else {
       print(response.body);
