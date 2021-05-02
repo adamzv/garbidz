@@ -5,6 +5,7 @@ import com.github.adamzv.backend.model.*;
 import com.github.adamzv.backend.model.dto.ContainerRegistrationDTO;
 import com.github.adamzv.backend.model.dto.UserFinishDTO;
 import com.github.adamzv.backend.model.dto.UserRegistrationDTO;
+import com.github.adamzv.backend.model.dto.UserUpdateDTO;
 import com.github.adamzv.backend.repository.*;
 import org.passay.*;
 import org.slf4j.Logger;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -86,21 +88,7 @@ public class UserService {
                 .orElseThrow(() -> new AddressNotFoundException(userDTO.getAddressId()));
         user.setAddress(address);
 
-        // let's do some magic here with containers
-        // according to design containers are already assigned to address before user is registered
-        // so for assigning containers to users, frontend has to send address id and type (String)
-        Set<Container> containers = containerRepository.findAllByAddress_Id(userDTO.getAddressId());
-        Set<Container> userContainers = containers.stream().filter(container -> userDTO.getContainers().stream()
-                .map(ContainerRegistrationDTO::getGarbageType)
-                .collect(Collectors.toSet())
-                .contains(container.getGarbageType()))
-                .collect(Collectors.toSet());
-
-        Set<ContainerUser> set = userContainers.stream()
-                .map(container -> new ContainerUser(container, user))
-                .collect(Collectors.toSet());
-        user.setContainerUser(set);
-        set.forEach(s -> containerUserRepository.save(s));
+        setContainersToUser(user, userDTO.getAddressId(), userDTO.getContainers());
         return userRepository.save(user);
     }
 
@@ -117,42 +105,40 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User updateUser(Long id, User newUser) {
+    public User saveChanges(User user) {
+        return userRepository.save(user);
+    }
+
+    public User updateUser(Long id, UserUpdateDTO newUser) {
         User oldUser = this.getUser(id);
         return userRepository.findById(id)
                 .map(user -> {
-                    if (!newUser.getName().isEmpty()) {
+                    if (newUser.getName() != null) {
                         user.setName(newUser.getName().substring(0, 1).toUpperCase() + newUser.getName().substring(1));
                     } else {
                         user.setName(oldUser.getName());
                     }
-                    if (!newUser.getSurname().isEmpty()) {
+                    if (newUser.getSurname() != null) {
                         user.setSurname(newUser.getSurname().substring(0, 1).toUpperCase() + newUser.getSurname().substring(1));
                     } else {
                         user.setSurname(oldUser.getSurname());
                     }
-                    if (!newUser.getEmail().isEmpty()) {
-                        user.setEmail(newUser.getEmail());
-                    } else {
-                        user.setEmail(oldUser.getEmail());
+                    if (newUser.getAddressId() != null) {
+                        user.setAddress(addressRepository.findById(newUser.getAddressId())
+                                .orElseThrow(() -> new AddressNotFoundException(newUser.getAddressId())));
                     }
-                    if (!newUser.getPassword().isEmpty()) {
+                    if (newUser.getPassword() != null) {
                         if (!(newUser.getPassword().length() >= 60)) {
                             if (isValid(newUser.getPassword(), true)) {
                                 user.setPassword(passwordEncoder.encode(newUser.getPassword()));
                             }
                         }
-                    } else {
-                        user.setPassword(oldUser.getPassword());
                     }
-                    if (!newUser.getToken().getToken().isEmpty()) {
-                        user.setToken(newUser.getToken());
-                    } else {
-                        user.setToken(oldUser.getToken());
+                    if (newUser.getContainers().size() > 0) {
+                        // TODO figure out how to remove join table of old user's containers
+                        containerUserRepository.deleteAll(user.getContainerUser());
+                        setContainersToUser(user, newUser.getAddressId(), newUser.getContainers());
                     }
-
-                    user.setAddress(addressRepository.findById(newUser.getAddress().getId())
-                            .orElseThrow(() -> new AddressNotFoundException(newUser.getAddress().getId())));
                     return userRepository.save(user);
                 })
                 .orElseThrow(() -> new UserNotFoundException(id));
@@ -182,6 +168,25 @@ public class UserService {
 
     public Page<User> getUsers(Pageable pageable) {
         return userRepository.findAll(pageable);
+    }
+
+    private void setContainersToUser(User user, Long addressId, List<ContainerRegistrationDTO> c) {
+
+        // let's do some magic here with containers
+        // according to design containers are already assigned to address before user is registered
+        // so for assigning containers to users, frontend has to send address id and type (String)
+        Set<Container> containers = containerRepository.findAllByAddress_Id(addressId);
+        Set<Container> userContainers = containers.stream().filter(container -> c.stream()
+                .map(ContainerRegistrationDTO::getGarbageType)
+                .collect(Collectors.toSet())
+                .contains(container.getGarbageType()))
+                .collect(Collectors.toSet());
+
+        Set<ContainerUser> set = userContainers.stream()
+                .map(container -> new ContainerUser(container, user))
+                .collect(Collectors.toSet());
+        user.setContainerUser(set);
+        set.forEach(s -> containerUserRepository.save(s));
     }
 
     public boolean isValid(final String password, final boolean update) {

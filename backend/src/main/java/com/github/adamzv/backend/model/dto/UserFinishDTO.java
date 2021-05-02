@@ -1,7 +1,5 @@
 package com.github.adamzv.backend.model.dto;
 
-import com.github.adamzv.backend.model.Container;
-
 import java.util.List;
 
 public class UserFinishDTO {
