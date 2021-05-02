@@ -39,6 +39,9 @@ dependencies:
   fluttertoast: ^8.0.6
   scroll_to_index: ^1.0.6
   intl: ^0.16.1
+  cron: ^0.3.0
+  workmanager: ^0.4.0
+  android_alarm_manager: 2.0.0
 
 dev_dependencies:
   flutter_test:
