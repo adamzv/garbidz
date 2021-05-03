@@ -12,7 +12,6 @@ import 'package:garbidz_app/components/AdressGuide.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:garbidz_app/pages/Home.dart';
 
-
 class SettingsProfilePage extends StatefulWidget {
   @override
   _SettingsProfilePageState createState() => _SettingsProfilePageState();
@@ -33,17 +32,13 @@ class _SettingsProfilePageState extends State<SettingsProfilePage> {
   }
 
   Future getDbvData() async {
-
     final data = await DBProvider.db.getContainers();
-
   }
-
 
   void initState() {
     // TODO: implement initState
     super.initState();
-   getDbvData();
-
+    getDbvData();
   }
 
   int pageChange = 0;
@@ -51,17 +46,13 @@ class _SettingsProfilePageState extends State<SettingsProfilePage> {
   String address = "";
   bool isAdress = false;
 
-
   final TextEditingController _typeAheadController = TextEditingController();
-
-
-
 
   Future Change(User user, String password) async {
     String uri = "10.0.2.2:8080";
 
     final response = await http.put(
-      Uri.http(globals.uri, "/api/users/"+user.id.toString()),
+      Uri.http(globals.uri, "/api/users/" + user.id.toString()),
       headers: <String, String>{
         'Content-Type': 'application/json',
         'Accept': 'application/json; charset=UTF-8',
@@ -70,29 +61,21 @@ class _SettingsProfilePageState extends State<SettingsProfilePage> {
         'password': password,
         'name': user.first_name,
         'surname': user.last_name,
-
-
       }),
     );
 
     if (response.statusCode == 200) {
-
     } else {
       print(response.body);
-
-
     }
   }
-
-
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-            backgroundColor:Color.fromRGBO(63, 29, 90, 1.0),
-        ),
+      appBar: AppBar(
+        backgroundColor: Color.fromRGBO(63, 29, 90, 1.0),
+      ),
       backgroundColor: Color.fromRGBO(63, 29, 90, 1.0),
       body: FutureBuilder(
           future: getDbData(),
@@ -132,30 +115,25 @@ class _SettingsProfilePageState extends State<SettingsProfilePage> {
                           children: [
                             Expanded(
                               flex: 3,
-                              child:
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 25,
-                                          right: 10,
-                                          top: 0,
-                                          bottom: 0),
-                                      child: Transform(
-                                        transform: Matrix4.rotationY(math.pi),
-                                        alignment: Alignment.center,
-                                        child: Transform.rotate(
-                                          angle: -0.20,
-                                          child: Center(
-                                            child: Container(
-                                                width: 100,
-                                                height: 100,
-                                                child: Image.asset(
-                                                    'assets/icons/trash.png')),
-                                          ),
-                                        ),
-                                      ),
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 25, right: 10, top: 0, bottom: 0),
+                                child: Transform(
+                                  transform: Matrix4.rotationY(math.pi),
+                                  alignment: Alignment.center,
+                                  child: Transform.rotate(
+                                    angle: -0.20,
+                                    child: Center(
+                                      child: Container(
+                                          width: 100,
+                                          height: 100,
+                                          child: Image.asset(
+                                              'assets/icons/trash.png')),
                                     ),
-
-            ),
+                                  ),
+                                ),
+                              ),
+                            ),
                             Expanded(
                               flex: 6,
                               child: Container(
@@ -273,19 +251,22 @@ class _SettingsProfilePageState extends State<SettingsProfilePage> {
                                         textFieldConfiguration:
                                             TextFieldConfiguration(
                                                 autofocus: false,
-                                                controller: _typeAheadController,
+                                                controller:
+                                                    _typeAheadController,
                                                 style:
                                                     DefaultTextStyle.of(context)
                                                         .style
                                                         .copyWith(
                                                           decoration:
-                                                              TextDecoration.none,
+                                                              TextDecoration
+                                                                  .none,
                                                           color: Colors.black,
                                                           fontSize: 16.0,
                                                           fontFamily: 'Poppins',
                                                         ),
                                                 decoration: InputDecoration(
-                                                  suffixIcon: Icon(Icons.add_location),
+                                                    suffixIcon: Icon(
+                                                        Icons.add_location),
                                                     hintText:
                                                         "Nájdite svoju lokalitu...")),
                                         suggestionsCallback:
@@ -305,7 +286,6 @@ class _SettingsProfilePageState extends State<SettingsProfilePage> {
                                             idAddress = suggestion.id;
                                             address = suggestion.name;
                                             isAdress = true;
-
                                           });
                                         },
                                       ),
@@ -325,9 +305,7 @@ class _SettingsProfilePageState extends State<SettingsProfilePage> {
                                             borderRadius:
                                                 BorderRadius.circular(10)),
                                         child: TextButton(
-                                          onPressed: () async {
-
-                                          },
+                                          onPressed: () async {},
                                           child: Text(
                                             'Zmena údajov',
                                             style: TextStyle(
