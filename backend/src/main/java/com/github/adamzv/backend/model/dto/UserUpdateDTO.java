@@ -7,7 +7,7 @@ public class UserUpdateDTO {
     private String name;
     private String surname;
     private String password;
-    private Long addressId;
+    private String address;
     private List<ContainerRegistrationDTO> containers;
 
     public UserUpdateDTO() {
@@ -45,12 +45,12 @@ public class UserUpdateDTO {
         this.password = password;
     }
 
-    public Long getAddressId() {
-        return addressId;
+    public String getAddress() {
+        return address;
     }
 
-    public void setAddressId(Long addressId) {
-        this.addressId = addressId;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public List<ContainerRegistrationDTO> getContainers() {

@@ -123,9 +123,9 @@ public class UserService {
                     } else {
                         user.setSurname(oldUser.getSurname());
                     }
-                    if (newUser.getAddressId() != null) {
-                        user.setAddress(addressRepository.findById(newUser.getAddressId())
-                                .orElseThrow(() -> new AddressNotFoundException(newUser.getAddressId())));
+                    if (newUser.getAddress() != null) {
+                        user.setAddress(addressRepository.findAddressByAddress(newUser.getAddress())
+                                .orElseThrow(() -> new AddressNotFoundException(0L)));
                     }
                     if (newUser.getPassword() != null) {
                         if (!(newUser.getPassword().length() >= 60)) {
@@ -140,14 +140,14 @@ public class UserService {
                         // we have to remove outdated containers
                         user.getContainerUser().forEach(containerUser -> {
                             containerUser.getContainer().setContainerUser(
-                                    containerUser.getContainer().getContainerUser().stream().filter(containerUser1 ->
-                                            !containerUser1.getUser().getId().equals(user.getId())).collect(Collectors.toSet()));
+                                    containerUser.getContainer().getContainerUser().stream().filter(c ->
+                                            !c.getUser().getId().equals(user.getId())).collect(Collectors.toSet()));
 
                             containerUser.setUser(null);
                             containerUser.setContainer(null);
                             containerUserRepository.delete(containerUser);
                         });
-                        setContainersToUser(user, newUser.getAddressId(), newUser.getContainers());
+                        setContainersToUser(user, newUser.getContainers());
                     }
                     return userRepository.save(user);
                 })
@@ -178,6 +178,10 @@ public class UserService {
 
     public Page<User> getUsers(Pageable pageable) {
         return userRepository.findAll(pageable);
+    }
+
+    private void setContainersToUser(User user, List<ContainerRegistrationDTO> c) {
+        setContainersToUser(user, user.getAddress().getId(), c);
     }
 
     private void setContainersToUser(User user, Long addressId, List<ContainerRegistrationDTO> c) {
