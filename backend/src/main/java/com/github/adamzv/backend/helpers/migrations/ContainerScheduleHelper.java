@@ -1,15 +1,11 @@
 package com.github.adamzv.backend.helpers.migrations;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.flywaydb.core.api.migration.Context;
 
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class ContainerScheduleHelper {
@@ -20,7 +16,8 @@ public class ContainerScheduleHelper {
         this.context = context;
     }
 
-    public ContainerScheduleHelper(){}
+    public ContainerScheduleHelper() {
+    }
 
     private Long id;
 
@@ -77,6 +74,13 @@ public class ContainerScheduleHelper {
         }
     }
 
+    /**
+     * Inserts new schedule into the database
+     *
+     * @param containerScheduleHelper containerScheduleHelper
+     * @return ContainerScheduleHelper
+     * @throws Exception e
+     */
     public ContainerScheduleHelper insertSchedule(ContainerScheduleHelper containerScheduleHelper) throws Exception {
         try (Statement insert = context.getConnection().createStatement()) {
             insert.execute("INSERT INTO schedule (schedule.datetime) VALUES ('"
@@ -89,6 +93,13 @@ public class ContainerScheduleHelper {
         }
     }
 
+    /**
+     * Returns containers ids according address and garbage type
+     *
+     * @param containerScheduleHelper containerScheduleHelper
+     * @return List<Long>
+     * @throws Exception e
+     */
     public List<Long> getContainersIds(ContainerScheduleHelper containerScheduleHelper) throws Exception {
         try (Statement select = context.getConnection().createStatement()) {
             try (ResultSet rows = select.executeQuery("SELECT * FROM container INNER JOIN address ON address.id = container.id_address " +
@@ -103,6 +114,13 @@ public class ContainerScheduleHelper {
         }
     }
 
+    /**
+     * Inserts schedule to found containers ids
+     *
+     * @param containerScheduleHelper containerScheduleHelper
+     * @param containersIds
+     * @throws Exception e
+     */
     public void insertScheduleToContainers(ContainerScheduleHelper containerScheduleHelper, List<Long> containersIds) throws Exception {
         try (Statement insert = context.getConnection().createStatement()) {
             for (Long containersId : containersIds) {
