@@ -48,6 +48,8 @@ class _LoginState extends State<Login> {
     );
 
     if (response.statusCode == 200) {
+      DBProvider.db.dropContainers();
+      DBProvider.db.dropUsers();
       if( jsonDecode(response.body)['address']== null){
             _address = 0;
 
@@ -58,17 +60,16 @@ class _LoginState extends State<Login> {
       }else{
         address = jsonDecode(response.body)['address']['address'];
           for(int i =0; i<(jsonDecode(response.body)['containerUser']).length; i++){
-            Kontainer container = Kontainer(type:jsonDecode(response.body)['containerUser'][i]['container']['garbageType'], user_email: jsonDecode(response.body)['email']);
-            DBProvider.db.newContainer(container);
+            Kontainer container = Kontainer(type:(jsonDecode(response.body)['containerUser'][i]['container']['garbageType']), user_email: (jsonDecode(response.body)['email']));
+            await DBProvider.db.newContainer(container);
 
 
     }
       }
-      DBProvider.db.dropContainers();
-      DBProvider.db.dropUsers();
+
 
       var newUser = User(id: jsonDecode(response.body)['id'], first_name: jsonDecode(response.body)['name'], last_name: jsonDecode(response.body)['surname'], email: jsonDecode(response.body)['email'], token: jsonDecode(response.body)['token']['token'], address: address );
-      return DBProvider.db.newUser(newUser);
+      await DBProvider.db.newUser(newUser);
     } else {
       print(response.body);
       _address = 1;

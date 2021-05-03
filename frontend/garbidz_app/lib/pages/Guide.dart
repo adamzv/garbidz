@@ -67,7 +67,7 @@ class _GuidePageState extends State<Guide> {
           }
         }
         for(int i =0; i<positions.length; i++){
-          Kontainer container = Kontainer(type:_containerTypes[i], user_email: email);
+          Kontainer container = Kontainer(type:_containerTypes[positions[i]], user_email: email);
           DBProvider.db.newContainer(container);
         }
 

@@ -152,20 +152,19 @@ class DBProvider{
 
   }
 // TODO: return containers
-  Future<dynamic> getContainers(String email) async {
+  Future getContainers() async {
     final db = await database;
-
-    var res = await db.rawQuery("SELECT * FROM containers WHERE email ="+ email);
-    if(res.length == 0){
+    var maps = await db.rawQuery("SELECT * FROM containers");
+    if(maps.length == 0){
       return null;
     }else {
-      var resMap = res[0];
-      return resMap.isNotEmpty ? resMap : Null;
+
+      return maps.isNotEmpty ? maps : Null;
     }
-
-
   }
 
 
-
 }
+
+
+

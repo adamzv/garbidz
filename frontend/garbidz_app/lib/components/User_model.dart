@@ -45,6 +45,6 @@ class User {
         email: json["email"],
         token: json["token"],
         address: json["address"],
-        time: null,
+        time: json["time"],
       );
 }
