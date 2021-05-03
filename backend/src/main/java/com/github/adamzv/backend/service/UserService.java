@@ -135,8 +135,18 @@ public class UserService {
                         }
                     }
                     if (newUser.getContainers().size() > 0) {
-                        // TODO figure out how to remove join table of old user's containers
-                        containerUserRepository.deleteAll(user.getContainerUser());
+
+                        // since users can change which containers belong to them / they can change address
+                        // we have to remove outdated containers
+                        user.getContainerUser().forEach(containerUser -> {
+                            containerUser.getContainer().setContainerUser(
+                                    containerUser.getContainer().getContainerUser().stream().filter(containerUser1 ->
+                                            !containerUser1.getUser().getId().equals(user.getId())).collect(Collectors.toSet()));
+
+                            containerUser.setUser(null);
+                            containerUser.setContainer(null);
+                            containerUserRepository.delete(containerUser);
+                        });
                         setContainersToUser(user, newUser.getAddressId(), newUser.getContainers());
                     }
                     return userRepository.save(user);
