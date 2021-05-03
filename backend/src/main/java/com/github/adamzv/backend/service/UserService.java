@@ -58,8 +58,8 @@ public class UserService {
             }
 
             user.setEmail(userDTO.getEmail());
-            user.setName(userDTO.getName());
-            user.setSurname(userDTO.getSurname());
+            user.setName(userDTO.getName().substring(0, 1).toUpperCase() + userDTO.getName().substring(1));
+            user.setSurname(userDTO.getSurname().substring(0, 1).toUpperCase() + userDTO.getSurname().substring(1));
             user.setEnabled(false);
 
             // Set user role
