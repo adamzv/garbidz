@@ -31,4 +31,13 @@ class Kontainer {
         user_email: json["user_email"],
 
       );
+
+
+  List<Kontainer> fromList(List<Map<String,dynamic>> query) {
+    List<Kontainer> smetiak = List<Kontainer>();
+    for (Map map in query) {
+      smetiak.add(Kontainer.fromMap(map));
+    }
+    return smetiak;
+  }
 }

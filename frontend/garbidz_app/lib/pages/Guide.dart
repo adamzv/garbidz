@@ -67,17 +67,17 @@ class _GuidePageState extends State<Guide> {
           }
         }
         for(int i =0; i<positions.length; i++){
-          Kontainer container = Kontainer(type:_containerTypes[i], user_email: email);
+          Kontainer container = Kontainer(type:_containerTypes[positions[i]], user_email: email);
           DBProvider.db.newContainer(container);
         }
 
         DBProvider.db.newTime(email, (time.hour).toString()+":"+(time.minute).toString());
+        DBProvider.db.newAddress(email, address);
         print(response.body);
         Home.isLogged = true;
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => Home()));
       }else{
         print(response.body);
-        print("fok");
       }
       print(json);
     }catch(e){
