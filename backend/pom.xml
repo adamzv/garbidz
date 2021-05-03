@@ -11,7 +11,7 @@
     </parent>
     <groupId>com.github.adamzv</groupId>
     <artifactId>backend</artifactId>
-    <version>0.3.2</version>
+    <version>0.3.3</version>
     <name>backend</name>
     <description>Spring backend for Garbidž project</description>
     <properties>

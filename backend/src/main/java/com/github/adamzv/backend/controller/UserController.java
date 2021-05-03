@@ -2,6 +2,7 @@ package com.github.adamzv.backend.controller;
 
 import com.github.adamzv.backend.model.ERole;
 import com.github.adamzv.backend.model.User;
+import com.github.adamzv.backend.model.dto.UserUpdateDTO;
 import com.github.adamzv.backend.security.annotation.IsModerator;
 import com.github.adamzv.backend.security.annotation.IsSpecificUserOrModerator;
 import com.github.adamzv.backend.security.annotation.IsUser;
@@ -44,7 +45,7 @@ public class UserController {
     @PutMapping("/{id}")
     @IsUser
     @IsSpecificUserOrModerator
-    public User updateUser(@PathVariable Long id, @RequestBody User newUser) {
+    public User updateUser(@PathVariable Long id, @RequestBody UserUpdateDTO newUser) {
         return userService.updateUser(id, newUser);
     }
 
