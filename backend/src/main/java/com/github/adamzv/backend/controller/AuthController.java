@@ -96,7 +96,7 @@ public class AuthController {
                 // revoke token in DB
                 User user = userService.getUserByEmail(userSubject);
                 user.getToken().setRevoked(true);
-                userService.updateUser(user.getId(), user);
+                userService.saveChanges(user);
             } catch (TokenExpiredException e) {
                 return ResponseEntity.ok("User is logged out");
             }

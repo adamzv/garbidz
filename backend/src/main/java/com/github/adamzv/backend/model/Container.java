@@ -29,7 +29,7 @@ public class Container{
     private Set<ContainerSchedule> containerSchedule;
 
     @JsonBackReference(value = "container-user")
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "container",cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "container")
     private Set<ContainerUser> containerUser;
 
     public Long getId() {

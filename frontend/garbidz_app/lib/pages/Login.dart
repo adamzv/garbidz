@@ -1,16 +1,110 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:garbidz_app/components/Container_model.dart';
+import 'package:garbidz_app/components/User_model.dart';
 import 'package:garbidz_app/pages/Register.dart';
 import 'package:garbidz_app/pages/Guide.dart';
+import 'package:garbidz_app/pages/Home.dart';
+import 'package:garbidz_app/components/Database.dart';
 import 'dart:math' as math;
+import 'package:http/http.dart' as http;
+import 'dart:async';
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:garbidz_app/components/globals.dart' as globals;
+
+
+
+
+
+
 
 class Login extends StatefulWidget {
   @override
   _LoginState createState() => _LoginState();
+
 }
 
 class _LoginState extends State<Login> {
   bool _isObscure = true;
+  int _address = 3;
 
+
+
+  Future login(String password, String username) async {
+    String uri = "10.0.2.2:8080";
+    String address = null;
+    final response = await http.post(
+      Uri.http(globals.uri, "/api/auth/signin"),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Accept': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'password': password,
+        'username': username,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      DBProvider.db.dropContainers();
+      DBProvider.db.dropUsers();
+      if( jsonDecode(response.body)['address']== null){
+            _address = 0;
+
+
+           if((jsonDecode(response.body)['containerUser']).length != 0){
+
+           }
+      }else{
+        address = jsonDecode(response.body)['address']['address'];
+          for(int i =0; i<(jsonDecode(response.body)['containerUser']).length; i++){
+            Kontainer container = Kontainer(type:(jsonDecode(response.body)['containerUser'][i]['container']['garbageType']), user_email: (jsonDecode(response.body)['email']));
+            await DBProvider.db.newContainer(container);
+
+
+    }
+      }
+
+
+      var newUser = User(id: jsonDecode(response.body)['id'], first_name: jsonDecode(response.body)['name'], last_name: jsonDecode(response.body)['surname'], email: jsonDecode(response.body)['email'], token: jsonDecode(response.body)['token']['token'], address: address );
+      await DBProvider.db.newUser(newUser);
+    } else {
+      print(response.body);
+      _address = 1;
+
+    }
+  }
+
+
+  final TextEditingController _controller = TextEditingController();
+
+  final TextEditingController _controller2 = TextEditingController();
+  Future _futurelogin;
+
+  bool isEmailValidate = false;
+  bool isPassValidate = false;
+
+  bool validate(String email, String pass){
+    if(email.isEmpty){
+      setState(() {
+        isEmailValidate = true;
+      });
+
+      return false;
+    }
+    else if(pass.isEmpty){
+      isEmailValidate = false;
+      setState(() {
+        isPassValidate = true;
+      });
+      return false;
+    }
+    isPassValidate = false;
+    return true;
+
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -112,7 +206,7 @@ class _LoginState extends State<Login> {
                             flex: 1,
                             child: TextButton(
                               onPressed: () {
-                                Navigator.push(
+                                Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => Register(),
@@ -154,9 +248,11 @@ class _LoginState extends State<Login> {
                         padding: const EdgeInsets.only(
                             left: 15.0, right: 15.0, top: 10, bottom: 0),
                         child: TextField(
+                          controller: _controller,
                           decoration: InputDecoration(
                               border: UnderlineInputBorder(),
                               labelText: 'Email',
+                              errorText: isEmailValidate ? 'Prosím vložte email': null,
                               prefixIcon: Icon(Icons.account_circle_rounded),
                               hintText: 'Vložte email v tvare abc@abc.com'),
                         ),
@@ -167,8 +263,10 @@ class _LoginState extends State<Login> {
                         //padding: EdgeInsets.symmetric(horizontal: 15),
                         child: TextField(
                           obscureText: _isObscure,
+                          controller: _controller2,
                           decoration: InputDecoration(
                               hoverColor: Color.fromRGBO(63, 29, 90, 1.0),
+                              errorText: isPassValidate ? 'Prosím vložte heslo': null,
                               border: UnderlineInputBorder(),
                               labelText: 'Heslo',
                               prefixIcon: Icon(Icons.lock),
@@ -214,13 +312,39 @@ class _LoginState extends State<Login> {
                               color: Color.fromRGBO(189, 18, 121, 1.0),
                               borderRadius: BorderRadius.circular(10)),
                           child: TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => Guide(),
-                                  ));
-                            },
+                            onPressed: () async {
+                              if(validate(_controller.text,_controller2.text)) {
+
+                                await login(_controller2.text,_controller.text);
+
+                              if(_address == 0) {
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => Guide(),
+                                    ));
+
+
+
+                              }else if(_address ==1){
+                                final snackBar = SnackBar(
+                                    content: Text('Zlé prihlasovacie meno alebo heslo!'));
+                            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+                              }else {
+                                Home.isLogged = true;
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => Home(),
+                                    ));
+                              }
+
+
+
+                              }
+
+                              },
                             child: Text(
                               'Prihlásiť sa',
                               style: TextStyle(

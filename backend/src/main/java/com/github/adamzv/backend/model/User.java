@@ -64,7 +64,7 @@ public class User implements UserDetails {
     private Address address;
 
     @JsonManagedReference(value = "container-user")
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
     private Set<ContainerUser> containerUser = new HashSet<>();
 
     public User() {
