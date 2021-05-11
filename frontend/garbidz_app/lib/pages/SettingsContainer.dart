@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
@@ -10,6 +9,9 @@ import 'package:http/http.dart' as http;
 import 'package:garbidz_app/components/AdressGuide.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:garbidz_app/pages/Home.dart';
+import 'package:garbidz_app/components/globals.dart' as globals;
+
+import 'Settings.dart';
 
 class ContainerPage extends StatefulWidget {
   @override
@@ -19,6 +21,7 @@ class ContainerPage extends StatefulWidget {
 class _ContainerPageState extends State<ContainerPage> {
   PageController pageController = PageController(initialPage: 0);
   User newUser;
+
 
   Future<User> getDbData() async {
     final data = await DBProvider.db.getUser();
@@ -54,6 +57,7 @@ class _ContainerPageState extends State<ContainerPage> {
     // TODO: implement initState
     super.initState();
     getDbcontainer();
+
   }
 
   updateUser(String email) async {
@@ -109,6 +113,55 @@ class _ContainerPageState extends State<ContainerPage> {
       }
     }
   }
+
+  Future Change(User user) async {
+    String uri = "10.0.2.2:8080";
+    var list = [];
+    List positions = [];
+    for(int i=0; i<_isSelectedButtons.length; i++){
+      if(_isSelectedButtons[i]){
+        positions.add(i);
+      }
+    }
+    if(positions.length>0){
+
+        list =  List.from(positions.map((e) => {'addressId':idAddress, 'garbageType':_containerTypes[e]})).toList();
+      }
+
+      final response = await http.put(
+        Uri.http(globals.uri, "/api/users/" + user.id.toString()),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          'Accept': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer '+user.token,
+        },
+        body: jsonEncode(<String, dynamic>{
+          'id': user.id.toString(),
+          'name': user.first_name,
+          'surname': user.last_name,
+          'address': user.address,
+          'containers': list,
+
+
+        }),
+      );
+
+      if (response.statusCode == 200) {
+
+
+
+        final snackBar = SnackBar(
+            content: Text('Údaje boli zmenené!'));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+      } else {
+        final snackBar = SnackBar(
+            content: Text('Nastala chyba!'));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
+    }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -358,7 +411,7 @@ class _ContainerPageState extends State<ContainerPage> {
                                                   await DBProvider.db
                                                       .dropContainers();
                                                   await updateUser(user.email);
-
+                                                  await Change(user);
                                                   Navigator.pop(context);
                                                 }),
                                           ),

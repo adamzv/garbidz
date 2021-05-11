@@ -12,9 +12,23 @@ import 'package:garbidz_app/components/AdressGuide.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:garbidz_app/pages/Home.dart';
 
+import 'Settings.dart';
+
 class SettingsProfilePage extends StatefulWidget {
   @override
   _SettingsProfilePageState createState() => _SettingsProfilePageState();
+}
+
+class Smetiak {
+  String id;
+  String garbageType;
+
+  Smetiak(this.id, this.garbageType);
+
+  @override
+  String toString() {
+    return '{ ${this.id}, ${this.garbageType} }';
+  }
 }
 
 class _SettingsProfilePageState extends State<SettingsProfilePage> {
@@ -50,23 +64,52 @@ class _SettingsProfilePageState extends State<SettingsProfilePage> {
 
   Future Change(User user, String password) async {
     String uri = "10.0.2.2:8080";
+    var list = [];
+    var map;
+    var test;
+    final data = await DBProvider.db.getContainers();
+    for (int i = 0; i < data.length; i++) {
+      map = {'address': idAddress, 'garbageType': data[i]['type']};
+
+      list.add(map);
+    }
+
+    List positions = [];
+    for (int i = 0; i < data.length; i++) {
+      positions.add(i);
+    }
+
+    if (positions.length > 0) {
+      test = List.from(positions.map(
+              (e) => {'addressId': idAddress, 'garbageType': data[e]['type']}))
+          .toList();
+    }
 
     final response = await http.put(
       Uri.http(globals.uri, "/api/users/" + user.id.toString()),
       headers: <String, String>{
         'Content-Type': 'application/json',
         'Accept': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ' + user.token,
       },
-      body: jsonEncode(<String, String>{
+      body: jsonEncode(<String, dynamic>{
+        'id': user.id.toString(),
         'password': password,
         'name': user.first_name,
         'surname': user.last_name,
+        'address': user.address,
+        'containers': list,
       }),
     );
 
     if (response.statusCode == 200) {
+      await DBProvider.db.newUser(user);
+
+      final snackBar = SnackBar(content: Text('Údaje boli zmenené!'));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     } else {
-      print(response.body);
+      final snackBar = SnackBar(content: Text('Nastala chyba!'));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
 
@@ -85,7 +128,7 @@ class _SettingsProfilePageState extends State<SettingsProfilePage> {
               AddressApi.token = user.token;
               _controllerName.text = user.first_name;
               _controllerSurname.text = user.last_name;
-              _typeAheadController.text = user.address;
+              // _typeAheadController.text = user.address;
               return Center(
                 child: PageView(
                   controller: pageController,
@@ -268,7 +311,7 @@ class _SettingsProfilePageState extends State<SettingsProfilePage> {
                                                     suffixIcon: Icon(
                                                         Icons.add_location),
                                                     hintText:
-                                                        "Nájdite svoju lokalitu...")),
+                                                        "" + user.address)),
                                         suggestionsCallback:
                                             AddressApi.getAddressSuggestions,
                                         itemBuilder:
@@ -305,7 +348,29 @@ class _SettingsProfilePageState extends State<SettingsProfilePage> {
                                             borderRadius:
                                                 BorderRadius.circular(10)),
                                         child: TextButton(
-                                          onPressed: () async {},
+                                          onPressed: () async {
+                                            List newAddress;
+                                            if (address == "") {
+                                              newAddress =
+                                                  user.address.split(",");
+                                            } else {
+                                              newAddress = address.split(",");
+                                            }
+
+                                            User u2 = new User(
+                                                id: user.id,
+                                                first_name:
+                                                    _controllerName.text,
+                                                last_name:
+                                                    _controllerSurname.text,
+                                                email: user.email,
+                                                token: user.token,
+                                                address: newAddress[0],
+                                                time: user.time);
+                                            await Change(
+                                                u2, _controllerPassword.text);
+                                            Navigator.pop(context);
+                                          },
                                           child: Text(
                                             'Zmena údajov',
                                             style: TextStyle(
