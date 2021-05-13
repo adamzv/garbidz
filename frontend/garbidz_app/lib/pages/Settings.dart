@@ -21,7 +21,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.black,
-        body: SafeArea(
+        body: SingleChildScrollView(
             child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -36,6 +36,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ],
               ),
             ),
+
             Padding(
               padding: const EdgeInsets.all(18.0),
               child: Text(
@@ -51,8 +52,8 @@ class _SettingsPageState extends State<SettingsPage> {
               padding: const EdgeInsets.all(20.0),
               child: Center(
                 child: Wrap(
-                  spacing: 20,
-                  runSpacing: 20.0,
+                  spacing: 10,
+                  runSpacing: 0.0,
                   children: <Widget>[
                     InkWell(
                       onTap: () {
@@ -63,8 +64,8 @@ class _SettingsPageState extends State<SettingsPage> {
                             ));
                       },
                       child: SizedBox(
-                        width: 160.0,
-                        height: 160.0,
+                        width: 150.0,
+                        height: 150.0,
                         child: Card(
                           color: Color.fromARGB(255, 21, 21, 21),
                           elevation: 2.0,
@@ -107,8 +108,8 @@ class _SettingsPageState extends State<SettingsPage> {
                             ));
                       },
                       child: SizedBox(
-                        width: 160.0,
-                        height: 160.0,
+                        width: 150.0,
+                        height: 150.0,
                         child: Card(
                           color: Color.fromARGB(255, 21, 21, 21),
                           elevation: 2.0,
@@ -151,8 +152,8 @@ class _SettingsPageState extends State<SettingsPage> {
                             ));
                       },
                       child: SizedBox(
-                        width: 160.0,
-                        height: 160.0,
+                        width: 150.0,
+                        height: 150.0,
                         child: Card(
                           color: Color.fromARGB(255, 21, 21, 21),
                           elevation: 2.0,
@@ -197,8 +198,8 @@ class _SettingsPageState extends State<SettingsPage> {
                             ));
                       },
                       child: SizedBox(
-                        width: 160.0,
-                        height: 160.0,
+                        width: 150.0,
+                        height: 150.0,
                         child: Card(
                           color: Color.fromARGB(255, 21, 21, 21),
                           elevation: 2.0,

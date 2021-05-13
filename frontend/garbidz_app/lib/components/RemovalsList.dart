@@ -18,13 +18,12 @@ class RemovalsApi {
       String id, String token) async {
 
     final url = Uri.parse(
-        'http://' + globals.uri + '/api/schedules/user/' + id.toString());
+        'http://' + globals.uri + '/api/schedules/user/' + globals.idUser);
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json; charset=UTF-8',
       'Authorization': 'Bearer ' + globals.token,
     });
-    print(globals.token);
     if (response.statusCode == 200) {
       final decoded = jsonDecode(response.body);
       final List address = decoded['content'];
