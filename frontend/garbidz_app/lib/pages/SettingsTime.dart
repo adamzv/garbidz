@@ -44,8 +44,17 @@ class _TimePageState extends State<Time> {
   }
 
   timeset(email) async {
+    String hour = time.hour.toString();
+    String minute = time.minute.toString();
+
+    if(hour.length == 1){
+      hour = "0"+hour;
+    }
+    if(minute.length == 1){
+      minute = "0"+minute;
+    }
     DBProvider.db.newTime(
-        email, (time.hour).toString() + ":" + (time.minute).toString());
+        email, hour + ":" + minute);
   }
 
   Future<Null> selectTime(BuildContext context) async {

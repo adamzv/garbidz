@@ -5,6 +5,9 @@ import 'package:garbidz_app/components/User_model.dart';
 import 'package:garbidz_app/pages/Home.dart';
 import 'package:garbidz_app/components/globals.dart' as globals;
 
+import 'Guide.dart';
+import 'Login.dart';
+
 class Loading extends StatefulWidget {
   @override
   _LoadingState createState() => _LoadingState();
@@ -17,11 +20,26 @@ class _LoadingState extends State<Loading> with SingleTickerProviderStateMixin{
    if(data!=null){
      User user = User.fromMap(data);
     globals.token = user.token;
+    print(user.token);
     globals.idUser = user.id.toString();
      Home.isLogged = true;
+     if(user.address == null){
+       await Future.delayed(Duration(seconds: 4));
+       Navigator.pushReplacement(
+           context,
+           MaterialPageRoute(
+             builder: (context) => Login(),
+           ));
+     }else{
+       await Future.delayed(Duration(seconds: 4));
+       Navigator.pushReplacementNamed(context, '/home');
+     }
+   }else {
+     await Future.delayed(Duration(seconds: 4));
+     Navigator.pushReplacementNamed(context, '/home');
    }
-   await Future.delayed(Duration(seconds: 4));
-    Navigator.pushReplacementNamed(context, '/home');
+
+
   }
   @override
   void initState() {

@@ -124,7 +124,27 @@ class _MarkDetailState extends State<MarkDetail> {
             ],
           );
           containerss.add(container);
+        }else if(decoded[i]['garbageType'].toString().toLowerCase().contains('bio')){
+          Row container = Row(
+            children: [
+              Icon(
+                Icons.delete,
+                color: Color.fromRGBO(159, 97, 106, 1.0),
+                size: 25.0 ,
+              ),
+              Text('Bioodpad',
+                style: TextStyle(
+                    color: Color.fromRGBO(63 , 29, 90, 1.0),
+                    fontFamily: 'Poppins',
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.w400
+                ),
+              ),
+            ],
+          );
+          containerss.add(container);
         }
+
       }
       print(response.body);
     }else{
