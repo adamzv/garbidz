@@ -92,13 +92,19 @@ class _SettingsProfilePageState extends State<SettingsProfilePage> {
         'Accept': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer ' + user.token,
       },
-      body: jsonEncode(<String, dynamic>{
+      body: password != "" ? jsonEncode(<String, dynamic>{
         'id': user.id.toString(),
         'password': password,
         'name': user.first_name,
         'surname': user.last_name,
         'address': user.address,
         'containers': list,
+      }) : jsonEncode(<String, dynamic>{
+    'id': user.id.toString(),
+    'name': user.first_name,
+    'surname': user.last_name,
+    'address': user.address,
+    'containers': list,
       }),
     );
 
