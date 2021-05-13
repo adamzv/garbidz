@@ -8,7 +8,7 @@ import 'dart:async';
 
 class HttpService{
   static String token="";
-  final String postsUrl = "http://"+globals.uri+"/api/addresses?size=2000";
+  final String postsUrl = "http://"+globals.uri+"/api/addresses/all";
   Future <List<Address>> getPosts()async{
     final res = await http.get(
         Uri.parse(postsUrl),
@@ -20,7 +20,7 @@ class HttpService{
     if(res.statusCode == 200){
       try{
         final decoded = jsonDecode(res.body);
-        List<dynamic> body = decoded['content'];
+        List<dynamic> body = decoded;
 
         List<Address> addresses = body.map((dynamic item) => Address.fromJson(item)).toList();
         return addresses;

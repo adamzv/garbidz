@@ -50,6 +50,7 @@ class _LoginState extends State<Login> {
     if (response.statusCode == 200) {
       DBProvider.db.dropContainers();
       DBProvider.db.dropUsers();
+      globals.token = jsonDecode(response.body)['token']['token'];
       if( jsonDecode(response.body)['address']== null){
             _address = 0;
 

@@ -13,7 +13,7 @@ class AdressGuide{
 class AddressApi {
   static String token = "";
   static Future<List<AdressGuide>> getAddressSuggestions(String query) async {
-  final url = Uri.parse('http://'+globals.uri+'/api/addresses?size=2000');
+  final url = Uri.parse('http://'+globals.uri+'/api/addresses/all');
   final response = await http.get(url,
       headers: {
         'Content-Type': 'application/json',
@@ -22,7 +22,7 @@ class AddressApi {
       });
   if(response.statusCode == 200){
     final decoded = jsonDecode(response.body);
-    final List address = decoded['content'];
+    final List address = decoded;
 
     return address.map((json) => AdressGuide.fromJson(json)).where((address){
     final nameLower = address.name.toLowerCase();

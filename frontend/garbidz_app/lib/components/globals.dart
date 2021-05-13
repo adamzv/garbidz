@@ -1,5 +1,5 @@
 library my_prj.globals;
-String uri = "10.0.2.2:8080";
+String uri = "20.52.113.225";
 String idUser = "";
 String token = "";
 int periodic = 1;
