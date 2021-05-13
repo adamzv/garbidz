@@ -51,6 +51,7 @@ class _LoginState extends State<Login> {
       DBProvider.db.dropContainers();
       DBProvider.db.dropUsers();
       globals.token = jsonDecode(response.body)['token']['token'];
+      globals.idUser = jsonDecode(response.body)['id'].toString();
       if( jsonDecode(response.body)['address']== null){
             _address = 0;
 
@@ -283,26 +284,7 @@ class _LoginState extends State<Login> {
                               hintText: 'Vložte heslo'),
                         ),
                       ),
-                      TextButton(
-                        onPressed: () {
-                          //TODO FORGOT PASSWORD
-                        },
-                        child: Stack(
-                          children: <Widget>[
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                'Zabudnuté heslo ?',
-                                style: TextStyle(
-                                    color: Color.fromRGBO(63, 29, 90, 1.0),
-                                    fontFamily: 'Poppins',
-                                    fontSize: 14.0,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
+
                       Padding(
                         padding: const EdgeInsets.only(
                             left: 15.0, right: 15.0, top: 15, bottom: 0),

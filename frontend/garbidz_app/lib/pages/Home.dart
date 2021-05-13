@@ -3,6 +3,7 @@ import 'package:garbidz_app/pages/Login.dart';
 import 'package:garbidz_app/pages/MapContainers.dart';
 import 'package:garbidz_app/pages/Removals.dart';
 import 'package:garbidz_app/pages/Settings.dart';
+import 'package:garbidz_app/components/globals.dart' as globals;
 
 class Home extends StatefulWidget {
   static bool isLogged = false;

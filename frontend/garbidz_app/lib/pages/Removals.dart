@@ -67,6 +67,7 @@ class _RemovalsState extends State<Removals> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    getDbData();
     controller = AutoScrollController(
         viewportBoundaryGetter: () =>
             Rect.fromLTRB(0, 0, 0, MediaQuery.of(context).padding.bottom),
