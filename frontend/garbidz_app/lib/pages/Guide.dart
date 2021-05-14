@@ -10,6 +10,7 @@ import 'package:http/http.dart' as http;
 import 'package:garbidz_app/components/AdressGuide.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:garbidz_app/pages/Home.dart';
+import 'package:garbidz_app/components/globals.dart' as globals;
 class Guide extends StatefulWidget {
   @override
   _GuidePageState createState() => _GuidePageState();
@@ -50,7 +51,7 @@ class _GuidePageState extends State<Guide> {
   Future <void> _sendFinishedGuide(Map json, BuildContext context, String email, String token) async {
 
     try{
-      final url = Uri.parse('http://10.0.2.2:8080/api/auth/finish');
+      final url = Uri.parse('http://'+globals.uri+'/api/auth/finish');
       final response = await http.post(url,
           headers: {
             'Content-Type': 'application/json',
@@ -70,8 +71,17 @@ class _GuidePageState extends State<Guide> {
           Kontainer container = Kontainer(type:_containerTypes[positions[i]], user_email: email);
           DBProvider.db.newContainer(container);
         }
+        String hour = time.hour.toString();
+        String minute = time.minute.toString();
 
-        DBProvider.db.newTime(email, (time.hour).toString()+":"+(time.minute).toString());
+        if(hour.length == 1){
+          hour = "0"+hour;
+        }
+        if(minute.length == 1){
+          minute = "0"+minute;
+        }
+
+        DBProvider.db.newTime(email, hour+":"+minute);
         DBProvider.db.newAddress(email, address);
         print(response.body);
         Home.isLogged = true;
@@ -140,6 +150,7 @@ class _GuidePageState extends State<Guide> {
     },);
     if(picked != null){
       setState(() {
+
         time = picked;
       });
     }

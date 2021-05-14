@@ -293,7 +293,7 @@ class _RegisterPageState extends State<Register> {
                                       _isObscure = !_isObscure;
                                     });
                                   }),
-                              hintText: 'Vložte heslo'),
+                              hintText: 'Použite: A-z-0-9-#!._?,'),
                         ),
                       ),
                       Padding(

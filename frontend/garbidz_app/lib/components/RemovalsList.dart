@@ -16,12 +16,13 @@ class RemovalsList {
 class RemovalsApi {
   static Future<List<RemovalsList>> getRemovalsList(
       String id, String token) async {
+
     final url = Uri.parse(
-        'http://' + globals.uri + '/api/schedules/user/' + id.toString());
+        'http://' + globals.uri + '/api/schedules/user/' + globals.idUser);
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json; charset=UTF-8',
-      'Authorization': 'Bearer ' + token,
+      'Authorization': 'Bearer ' + globals.token,
     });
     if (response.statusCode == 200) {
       final decoded = jsonDecode(response.body);
