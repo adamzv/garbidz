@@ -1,6 +1,6 @@
 package com.github.adamzv.backend.model;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "user_token")

@@ -1,1 +1,1 @@
-ALTER TABLE `user_account` CHANGE `id_address` `id_address` BIGINT(20) UNSIGNED NULL;
+ALTER TABLE user_account CHANGE id_address id_address BIGINT(20) UNSIGNED NULL;

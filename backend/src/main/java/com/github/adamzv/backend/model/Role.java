@@ -1,8 +1,8 @@
 package com.github.adamzv.backend.model;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 // role is a reserved word in MySQL
 @Entity(name = "user_role")

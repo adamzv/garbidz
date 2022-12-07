@@ -18,7 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Date;
 
 import static com.github.adamzv.backend.security.configuration.SecurityConfigurationConstants.*;
@@ -28,12 +28,18 @@ import static com.github.adamzv.backend.security.configuration.SecurityConfigura
 public class AuthController {
 
     private UserService userService;
-    private AuthenticationManager authenticationManager;
+    //private AuthenticationManager authenticationManager;
     private ApplicationEventPublisher eventPublisher;
 
-    public AuthController(UserService userService, AuthenticationManager authenticationManager, ApplicationEventPublisher eventPublisher) {
+//    public AuthController(UserService userService, AuthenticationManager authenticationManager, ApplicationEventPublisher eventPublisher) {
+//        this.userService = userService;
+//        this.authenticationManager = authenticationManager;
+//        this.eventPublisher = eventPublisher;
+//    }
+
+
+    public AuthController(UserService userService, ApplicationEventPublisher eventPublisher) {
         this.userService = userService;
-        this.authenticationManager = authenticationManager;
         this.eventPublisher = eventPublisher;
     }
 
@@ -52,9 +58,9 @@ public class AuthController {
 
     @PostMapping("/signin")
     public ResponseEntity<User> signinUser(@RequestBody UserLoginDTO login) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(login.getUsername(), login.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        //Authentication authentication = authenticationManager.authenticate(
+        //        new UsernamePasswordAuthenticationToken(login.getUsername(), login.getPassword()));
+        //SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String jwtToken = JWT.create()
                 .withSubject(login.getUsername())
@@ -83,7 +89,7 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<?> logoutUser(HttpServletRequest request) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(null, null, null));
+        //authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(null, null, null));
 
         String token = request.getHeader(HEADER_STRING);
         if (token != null) {

@@ -1,8 +1,10 @@
-CREATE TABLE IF NOT EXISTS `region`
+CREATE SEQUENCE region_seq;
+
+CREATE TABLE IF NOT EXISTS region
 (
-    `id`   BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `region` VARCHAR(255) NOT NULL,
-    PRIMARY KEY (`id`),
-    UNIQUE INDEX `id_UNIQUE` (`id` ASC)
+    id   BIGINT CHECK (id > 0) NOT NULL DEFAULT NEXTVAL ('region_seq'),
+    region VARCHAR(255) NOT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT id_UNIQUE UNIQUE (id)
 )
-    ENGINE = InnoDB;
+;

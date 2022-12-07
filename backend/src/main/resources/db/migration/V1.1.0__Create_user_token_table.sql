@@ -1,6 +1,8 @@
-CREATE TABLE IF NOT EXISTS `user_token` (
-    `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
-    `revoked` bit(1) DEFAULT NULL,
-    `token` varchar(255) DEFAULT NULL,
-    PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE SEQUENCE user_token_seq;
+
+CREATE TABLE IF NOT EXISTS user_token (
+                                          id BIGINT NOT NULL DEFAULT NEXTVAL ('user_token_seq'),
+                                          revoked boolean(1) DEFAULT NULL,
+                                          token varchar(255) DEFAULT NULL,
+                                          PRIMARY KEY (id)
+) ;
