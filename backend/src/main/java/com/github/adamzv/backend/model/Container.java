@@ -2,7 +2,7 @@ package com.github.adamzv.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.Set;
 
 @Entity
@@ -24,9 +24,15 @@ public class Container{
     @JoinColumn(name = "id_type", nullable = false)
     private ContainerType type;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "schedule", cascade = CascadeType.ALL)
+    // TODO rework ManyToMany relationships
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JoinTable(name = "container_has_schedule",
+    joinColumns = @JoinColumn(name = "id_container"),
+    inverseJoinColumns = @JoinColumn(name = "id_schedule"))
+    //@OneToMany(fetch = FetchType.EAGER, mappedBy = "schedule", cascade = CascadeType.ALL)
     @JsonBackReference
-    private Set<ContainerSchedule> containerSchedule;
+    private Set<Schedule> containerSchedule;
+//    private Set<ContainerSchedule> containerSchedule;
 
     @JsonBackReference(value = "container-user")
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "container")
@@ -64,11 +70,11 @@ public class Container{
         this.type = type;
     }
 
-    public Set<ContainerSchedule> getContainerSchedule() {
+    public Set<Schedule> getContainerSchedule() {
         return containerSchedule;
     }
 
-    public void setContainerSchedule(Set<ContainerSchedule> containerSchedule) {
+    public void setContainerSchedule(Set<Schedule> containerSchedule) {
         this.containerSchedule = containerSchedule;
     }
 

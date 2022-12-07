@@ -1,6 +1,6 @@
 package com.github.adamzv.backend.model;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity(name = "confirmation_token")
 public class ConfirmationToken {
