@@ -10,6 +10,7 @@ import com.github.adamzv.backend.security.annotation.IsModerator;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/towns")
@@ -24,12 +25,8 @@ public class TownController {
     }
 
     @GetMapping
-    public List<Town> getTowns(@RequestParam(name = "region_id", required = false) Long id) {
-        if (id != null) {
-            return townRepository.findAllByRegionId(id);
-        } else {
-            return townRepository.findAll();
-        }
+    public List<Town> getTowns(@RequestParam(name = "region_id", required = false) Optional<Long> id) {
+        return id.map(townRepository::findAllByRegionId).orElseGet(() -> townRepository.findAll());
     }
 
     @GetMapping("/{id}")
@@ -60,6 +57,7 @@ public class TownController {
         return townRepository.findById(id)
                 .map(town -> {
                     town.setTown(newTown.getTown());
+                    // TODO refactor
                     town.setRegion(regionRepository.findById(newTown.getRegion().getId()).get());
                     return townRepository.save(town);
                 })
