@@ -1,0 +1,38 @@
+version: "3"
+services:
+  mysqldb:
+    container_name: mysql
+    restart: always
+    image: mysql:latest
+    environment:
+      MYSQL_DATABASE: "garbidz"
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_USER: "garb"
+      MYSQL_PASSWORD: "garbidz"
+    volumes:
+      - "/opt/db_data:/var/lib/mysql"
+    ports:
+      - 3306:3306
+    networks:
+      - network
+  backend:
+    container_name: backend
+    build: ./backend
+    image: "garbidz/backend"
+    ports:
+      - 80:8080
+    depends_on:
+      - mysqldb
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/garbidz
+      - SPRING_DATASOURCE_PASSWORD=garbidz
+      - SPRING_DATASOURCE_USERNAME=garb
+      - SPRING_FLYWAY_URL=jdbc:mysql://mysqldb:3306/garbidz
+      - SPRING_FLYWAY_PASSWORD=garbidz
+      - SPRING_FLYWAY_USER=garb
+    restart: always
+    networks:
+      - network
+networks:
+  network:
+    driver: bridge
