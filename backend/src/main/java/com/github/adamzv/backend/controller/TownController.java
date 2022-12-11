@@ -7,6 +7,7 @@ import com.github.adamzv.backend.model.Town;
 import com.github.adamzv.backend.repository.RegionRepository;
 import com.github.adamzv.backend.repository.TownRepository;
 import com.github.adamzv.backend.security.annotation.IsModerator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,9 +17,10 @@ import java.util.Optional;
 @RequestMapping("/towns")
 public class TownController {
 
-    private TownRepository townRepository;
-    private RegionRepository regionRepository;
+    private final TownRepository townRepository;
+    private final RegionRepository regionRepository;
 
+    @Autowired
     public TownController(TownRepository townRepository, RegionRepository regionRepository) {
         this.townRepository = townRepository;
         this.regionRepository = regionRepository;
@@ -26,7 +28,7 @@ public class TownController {
 
     @GetMapping
     public List<Town> getTowns(@RequestParam(name = "region_id", required = false) Optional<Long> id) {
-        return id.map(townRepository::findAllByRegionId).orElseGet(() -> townRepository.findAll());
+        return id.map(townRepository::findAllByRegionId).orElseGet(townRepository::findAll);
     }
 
     @GetMapping("/{id}")
