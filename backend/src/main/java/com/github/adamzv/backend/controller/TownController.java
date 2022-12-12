@@ -33,8 +33,7 @@ public class TownController {
 
     @GetMapping("/{id}")
     public Town getTown(@PathVariable Long id) {
-        return townRepository.findById(id)
-                .orElseThrow(() -> new TownNotFoundException(id));
+        return townRepository.findById(id).orElseThrow(() -> new TownNotFoundException(id));
     }
 
     @PostMapping
@@ -47,8 +46,7 @@ public class TownController {
         // JSON request may not include whole region object, so we'll search for the region object
         // and then set it to town object, otherwise throw an exception because the object with specified id
         // does not exist in db
-        Region region = regionRepository.findById(town.getRegion().getId())
-                .orElseThrow(() -> new RegionNotFoundException(town.getRegion().getId()));
+        Region region = regionRepository.findById(town.getRegion().getId()).orElseThrow(() -> new RegionNotFoundException(town.getRegion().getId()));
         town.setRegion(region);
         return townRepository.save(town);
     }
@@ -56,14 +54,11 @@ public class TownController {
     @PutMapping("/{id}")
     @IsModerator
     public Town updateTown(@PathVariable Long id, @RequestBody Town newTown) {
-        return townRepository.findById(id)
-                .map(town -> {
-                    town.setTown(newTown.getTown());
-                    // TODO refactor
-                    town.setRegion(regionRepository.findById(newTown.getRegion().getId()).get());
-                    return townRepository.save(town);
-                })
-                .orElseThrow(() -> new RuntimeException("Town with id " + id + " can not be updated!"));
+        return townRepository.findById(id).map(town -> {
+            town.setTown(newTown.getTown());
+            town.setRegion(regionRepository.findById(newTown.getRegion().getId()).orElseThrow(() -> new RegionNotFoundException(town.getRegion().getId())));
+            return townRepository.save(town);
+        }).orElseThrow(() -> new RuntimeException("Town with id " + id + " can not be updated!"));
     }
 
     @DeleteMapping("/{id}")
