@@ -49,7 +49,7 @@ public class ScheduleController {
 
     @PutMapping("/{id}")
     @IsModerator
-    public Schedule updateschedule(@PathVariable Long id, @RequestBody Schedule newSchedule) {
+    public Schedule updateSchedule(@PathVariable Long id, @RequestBody Schedule newSchedule) {
         return scheduleRepository.findById(id)
                 .map(schedule -> {
                     schedule.setDatetime(newSchedule.getDatetime());

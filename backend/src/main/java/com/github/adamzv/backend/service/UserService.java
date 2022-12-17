@@ -7,6 +7,7 @@ import com.github.adamzv.backend.model.dto.UserFinishDTO;
 import com.github.adamzv.backend.model.dto.UserRegistrationDTO;
 import com.github.adamzv.backend.model.dto.UserUpdateDTO;
 import com.github.adamzv.backend.repository.*;
+import lombok.AllArgsConstructor;
 import org.passay.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +23,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class UserService {
 
     private UserRepository userRepository;
@@ -29,24 +31,11 @@ public class UserService {
     private AddressRepository addressRepository;
     private ContainerRepository containerRepository;
     private ConfirmationTokenRepository confirmationTokenRepository;
-    private ContainerUserRepository containerUserRepository;
 
 
     private PasswordEncoder passwordEncoder;
 
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
-
-    public UserService(UserRepository userRepository, RoleRepository roleRepository, AddressRepository addressRepository,
-                       ContainerRepository containerRepository, ConfirmationTokenRepository confirmationTokenRepository,
-                       ContainerUserRepository containerUserRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.addressRepository = addressRepository;
-        this.containerRepository = containerRepository;
-        this.confirmationTokenRepository = confirmationTokenRepository;
-        this.containerUserRepository = containerUserRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     // TODO: refactor everything to return ResponseEntity
     public User createUser(UserRegistrationDTO userDTO) {
@@ -113,6 +102,7 @@ public class UserService {
         User oldUser = this.getUser(id);
         return userRepository.findById(id)
                 .map(user -> {
+                    // TODO Optional
                     if (newUser.getName() != null) {
                         user.setName(newUser.getName().substring(0, 1).toUpperCase() + newUser.getName().substring(1));
                     } else {
@@ -138,15 +128,10 @@ public class UserService {
 
                         // since users can change which containers belong to them / they can change address
                         // we have to remove outdated containers
-                        user.getContainerUser().forEach(containerUser -> {
-                            containerUser.getContainer().setContainerUser(
-                                    containerUser.getContainer().getContainerUser().stream().filter(c ->
-                                            !c.getUser().getId().equals(user.getId())).collect(Collectors.toSet()));
 
-                            containerUser.setUser(null);
-                            containerUser.setContainer(null);
-                            containerUserRepository.delete(containerUser);
-                        });
+                        // remove user dependency to container
+                        user.getContainers().forEach(user::removeContainer);
+                        // add new containers to the user
                         setContainersToUser(user, newUser.getContainers());
                     }
                     return userRepository.save(user);
@@ -196,11 +181,7 @@ public class UserService {
                 .contains(container.getGarbageType()))
                 .collect(Collectors.toSet());
 
-        Set<ContainerUser> set = userContainers.stream()
-                .map(container -> new ContainerUser(container, user))
-                .collect(Collectors.toSet());
-        user.setContainerUser(set);
-        set.forEach(s -> containerUserRepository.save(s));
+        user.setContainers(userContainers);
     }
 
     public boolean isValid(final String password, final boolean update) {

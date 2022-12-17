@@ -1,13 +1,22 @@
 package com.github.adamzv.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = "container")
-public class Container{
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class Container {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,66 +37,6 @@ public class Container{
     @JsonBackReference
     private Set<ContainerSchedule> containerSchedule;
 
-    @JsonBackReference(value = "container-user")
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "container")
-    private Set<ContainerUser> containerUser;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getGarbageType() {
-        return garbageType;
-    }
-
-    public void setGarbageType(String garbageType) {
-        this.garbageType = garbageType;
-    }
-
-    public Address getAddress() {
-        return address;
-    }
-
-    public void setAddress(Address address) {
-        this.address = address;
-    }
-
-    public ContainerType getType() {
-        return type;
-    }
-
-    public void setType(ContainerType type) {
-        this.type = type;
-    }
-
-    public Set<ContainerSchedule> getContainerSchedule() {
-        return containerSchedule;
-    }
-
-    public void setContainerSchedule(Set<ContainerSchedule> containerSchedule) {
-        this.containerSchedule = containerSchedule;
-    }
-
-    public Set<ContainerUser> getContainerUser() {
-        return containerUser;
-    }
-
-    public void setContainerUser(Set<ContainerUser> containerUser) {
-        this.containerUser = containerUser;
-    }
-
-    @Override
-    public String toString() {
-        return "Container{" +
-                "id=" + id +
-                ", address=" + address +
-                ", type=" + type +
-                ", containerSchedule=" + containerSchedule +
-                ", containerUser=" + containerUser +
-                '}';
-    }
+    @ManyToMany(mappedBy = "containers")
+    private Set<User> users = new HashSet<>();
 }

@@ -1,7 +1,6 @@
 package com.github.adamzv.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.adamzv.backend.validation.ValidEmail;
 import com.sun.istack.NotNull;
@@ -10,9 +9,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.Collection;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -55,21 +54,48 @@ public class User implements UserDetails {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_has_role",
-    joinColumns = @JoinColumn(name = "id_user"),
-    inverseJoinColumns = @JoinColumn(name = "id_role"))
+            joinColumns = @JoinColumn(name = "id_user"),
+            inverseJoinColumns = @JoinColumn(name = "id_role"))
     private Set<Role> roles = new HashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "id_address")
     private Address address;
 
-    @JsonManagedReference(value = "container-user")
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
-    private Set<ContainerUser> containerUser = new HashSet<>();
+    @ManyToMany(cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
+    // TODO change table name to "user_has_containers"
+    // TODO add lombok support
+    @JoinTable(name = "container_has_user",
+            joinColumns = @JoinColumn(name = "id_user"),
+            inverseJoinColumns = @JoinColumn(name = "id_container"))
+    private Set<Container> containers = new HashSet<>();
 
     public User() {
         super();
         this.enabled = false;
+    }
+
+    // TODO hashcode/equals for both entities
+
+    public void addContainer(Container container) {
+        this.containers.add(container);
+        container.getUsers().add(this);
+    }
+
+    public void removeContainer(Container container) {
+        this.containers.remove(container);
+        container.getUsers().remove(this);
+    }
+
+    public Set<Container> getContainers() {
+        return containers;
+    }
+
+    public void setContainers(Set<Container> containers) {
+        this.containers = containers;
     }
 
     public Long getId() {
@@ -136,14 +162,6 @@ public class User implements UserDetails {
         this.enabled = enabled;
     }
 
-    public Set<ContainerUser> getContainerUser() {
-        return containerUser;
-    }
-
-    public void setContainerUser(Set<ContainerUser> containerUser) {
-        this.containerUser = containerUser;
-    }
-
     // UserDetails getters
     @JsonIgnore
     @Override
@@ -198,7 +216,7 @@ public class User implements UserDetails {
                 ", token=" + token +
                 ", roles=" + roles +
                 ", address=" + address +
-                ", containerUser=" + containerUser +
+                ", containers=" + containers +
                 '}';
     }
 }
