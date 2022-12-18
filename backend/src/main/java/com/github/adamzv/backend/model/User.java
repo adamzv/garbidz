@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.adamzv.backend.validation.ValidEmail;
 import com.sun.istack.NotNull;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +20,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Entity(name = "user_account")
+@Getter
+@Setter
+@ToString
 public class User implements UserDetails {
 
     @Id
@@ -62,12 +68,12 @@ public class User implements UserDetails {
     @JoinColumn(name = "id_address")
     private Address address;
 
-    @ManyToMany(cascade = {
-            CascadeType.PERSIST,
-            CascadeType.MERGE
-    })
+    @ManyToMany(fetch = FetchType.EAGER,
+            cascade = {
+                    CascadeType.PERSIST,
+                    CascadeType.MERGE
+            })
     // TODO change table name to "user_has_containers"
-    // TODO add lombok support
     @JoinTable(name = "container_has_user",
             joinColumns = @JoinColumn(name = "id_user"),
             inverseJoinColumns = @JoinColumn(name = "id_container"))
@@ -90,78 +96,6 @@ public class User implements UserDetails {
         container.getUsers().remove(this);
     }
 
-    public Set<Container> getContainers() {
-        return containers;
-    }
-
-    public void setContainers(Set<Container> containers) {
-        this.containers = containers;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public UserToken getToken() {
-        return token;
-    }
-
-    public void setToken(UserToken token) {
-        this.token = token;
-    }
-
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
-
-    public Address getAddress() {
-        return address;
-    }
-
-    public void setAddress(Address address) {
-        this.address = address;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
     // UserDetails getters
     @JsonIgnore
     @Override
@@ -169,10 +103,6 @@ public class User implements UserDetails {
         return roles.stream()
                 .map(role -> new SimpleGrantedAuthority(role.getRole().name()))
                 .collect(Collectors.toList());
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     // we are returing email as username
@@ -202,21 +132,5 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return enabled;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", enabled=" + enabled +
-                ", token=" + token +
-                ", roles=" + roles +
-                ", address=" + address +
-                ", containers=" + containers +
-                '}';
     }
 }

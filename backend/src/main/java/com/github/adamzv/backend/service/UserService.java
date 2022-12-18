@@ -57,7 +57,7 @@ public class UserService {
             // only admin / moderators can add other roles
             Set<Role> roles = new HashSet<>();
             Role role = roleRepository.findByRole(ERole.ROLE_USER)
-                    .orElseThrow(() -> new RoleNotFoundException());
+                    .orElseThrow(RoleNotFoundException::new);
             roles.add(role);
             user.setRoles(roles);
             return userRepository.save(user);

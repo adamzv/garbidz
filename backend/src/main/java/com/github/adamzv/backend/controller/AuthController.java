@@ -82,7 +82,7 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logoutUser(HttpServletRequest request) {
+    public ResponseEntity<String> logoutUser(HttpServletRequest request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(null, null, null));
 
         String token = request.getHeader(HEADER_STRING);
