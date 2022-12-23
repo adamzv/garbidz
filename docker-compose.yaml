@@ -1,0 +1,85 @@
+version: "3"
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    depends_on: 
+      - keycloakdb
+    restart: always
+    environment:
+      KEYCLOAK_CREATE_ADMIN_USER: true
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KEYCLOAK_DATABASE_HOST: keycloakdb
+      KEYCLOAK_DATABASE_USER: dbadmin
+      KEYCLOAK_DATABASE_PASSWORD: supersecretpassword
+    command:
+      - start-dev
+    ports:
+      - 8080:8080
+    networks:
+      - network
+  keycloakdb:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: supersecretpassword
+      POSTGRES_USER: dbadmin
+      POSTGRES_DB: bitnami_keycloak
+    networks:
+      - network
+    ports:
+      - 5432:5432
+    volumes:
+      - pgdb:/var/lib/postgresql/data
+  mysqldb:
+    container_name: mysql
+    restart: always
+    image: mysql:latest
+    environment:
+      MYSQL_DATABASE: "garbidz"
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_USER: "garb"
+      MYSQL_PASSWORD: "garbidz"
+    volumes:
+      - mysql:/var/lib/mysql
+    ports:
+      - 3306:3306
+    networks:
+      - network
+  db:
+    image: postgres
+    restart: "no"
+    environment:
+      POSTGRES_PASSWORD: "garbidz"
+      POSTGRES_USER: "garb"
+      POSTGRES_DB: "garbidz"
+    volumes:
+      - pgdb:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    networks:
+      - network
+  backend:
+    container_name: backend
+    build: ./backend
+    image: "garbidz/backend"
+    ports:
+      - 80:8080
+    depends_on:
+      - mysqldb
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/garbidz
+      - SPRING_DATASOURCE_PASSWORD=garbidz
+      - SPRING_DATASOURCE_USERNAME=garb
+      - SPRING_FLYWAY_URL=jdbc:mysql://mysqldb:3306/garbidz
+      - SPRING_FLYWAY_PASSWORD=garbidz
+      - SPRING_FLYWAY_USER=garb
+    restart: always
+    networks:
+      - network
+volumes:
+  mysql:
+  pgdb:
+networks:
+  network:
+    driver: bridge
