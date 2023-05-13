@@ -3,6 +3,8 @@ package db.migration;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.adamzv.backend.helpers.migrations.ContainerScheduleHelper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.flywaydb.core.api.migration.BaseJavaMigration;
 import org.flywaydb.core.api.migration.Context;
 
@@ -12,6 +14,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class V1_2_7__extract_containers_schedules extends BaseJavaMigration {
+
+    private static final Logger LOGGER = LogManager.getLogger(V1_2_7__extract_containers_schedules.class);
 
     @Override
     public void migrate(Context context) throws Exception {
@@ -41,7 +45,7 @@ public class V1_2_7__extract_containers_schedules extends BaseJavaMigration {
                 containerScheduleHelper.saveAll(containers);
             }
         } catch (IOException e) {
-            System.out.println("Unable to save containers schedule data: " + e.getMessage());
+            LOGGER.error("Unable to save containers schedule data: {}", e.getMessage());
         }
     }
 }
