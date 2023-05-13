@@ -2,6 +2,7 @@
 staging:
   auto_deploy_on: refs/pull/*/
   required_contexts: ["build-and-push-image"]
+  environment: staging
   description: 'Staging'
   payload:
     value_files: ["./deployment/values.yml"]
