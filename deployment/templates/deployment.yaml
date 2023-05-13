@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: garbidz-deployment
+  labels:
+    app: garbidz-deployment
+spec:
+  selector:
+    matchLabels:
+      app: garbidz-deployment
+  template:
+    metadata:
+      labels:
+        app: garbidz-deployment
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          resources: 
+            {{- toYaml .Values.resources | nindent 12 }}
+          env:
+            - name: DB_URL
+              value: jdbc:mysql://mysql.garbidz-test:3306/garbidz
+            - name: DB_USERNAME
+              value: garbidzuser
+            - name: DB_PASSWORD
+              value: garbidzpw

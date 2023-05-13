@@ -1,0 +1,29 @@
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: garbidz
+  namespace: garbidz-test
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-production
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  tls:
+    - hosts:
+        - garbidz.adamzverka.com
+      secretName: production-cert
+  rules:
+    - host: garbidz.adamzverka.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: garbidz-deployment
+                port:
+                  number: 8080
+status:
+  loadBalancer:
+    ingress:
+      - ip: 49.13.13.60
