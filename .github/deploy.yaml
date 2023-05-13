@@ -1,8 +1,7 @@
 # Automatic deployment to a staging environment on every push to master.
 staging:
   auto_deploy_on: refs/pull/*/
-  required_contexts: ["build"]
-  environment: staging
+  required_contexts: ["build-and-push-image"]
   description: 'Staging'
   payload:
     value_files: ["./deployment/values.yml"]
