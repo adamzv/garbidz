@@ -1,4 +1,5 @@
-name: 'Deploy'
+name: Deploy
+
 on:
   workflow_run:
     workflows: ["Java CI with Maven"]
@@ -6,6 +7,11 @@ on:
     types: 
       - completed
 
+env:
+  # Use docker.io for Docker Hub if empty
+  REGISTRY: ghcr.io
+  # github.repository as <account>/<repo>
+  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
   deployment:
