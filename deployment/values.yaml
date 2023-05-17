@@ -5,7 +5,7 @@ image:
   repository: adamzv/garbidz
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "pr-55"
+  tag: $IMG_NAME
 
 service:
   type: ClusterIP

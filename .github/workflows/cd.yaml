@@ -1,21 +1,27 @@
 name: 'Deploy'
-on: ['deployment']
+on:
+  workflow_run:
+    workflows: ["Java CI with Maven"]
+    branches: ["main"]
+    types: 
+      - completed
+
 
 jobs:
   deployment:
     runs-on: 'ubuntu-latest'
     steps:
-    - name: 'Checkout'
-      uses: 'actions/checkout@v1'
-
-    - name: 'Deploy'
-      # Parameters are pulled directly from the GitHub deployment event so the
-      # configuration for the job here is very minimal.
-      uses: 'deliverybot/helm@master'
-      with:
-        token: '${{ github.token }}'
-        secrets: '${{ toJSON(secrets) }}'
-        version: '${{ github.sha }}'
-        chart: 'app'
-      env:
-        KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'
+      - uses: actions/checkout@v3
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+      - name: Replace credentials
+        run: |
+          sed -i 's/$IMG_NAME/${{ steps.meta.outputs.tags }}/g' ./deployment/values.yaml
+      - name: Deploy
+        uses: WyriHaximus/github-action-helm3@v3
+        with:
+          exec: helm upgrade garbidz ./deployment --install --wait --namespace=garbidz-test --values=./deployment/values.yaml
+          kubeconfig: '${{ secrets.KUBECONFIG }}'
