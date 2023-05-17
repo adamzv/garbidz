@@ -85,7 +85,7 @@ jobs:
           images: ""
       - name: Replace credentials
         run: |
-          sed -i 's/$IMG_NAME/${{ steps.meta.outputs.tags }}/g' ./deployment/values.yaml
+          sed -i 's/$IMG_NAME/${GITHUB_REF_NAME}/g' ./deployment/values.yaml
       - name: Deploy
         uses: WyriHaximus/github-action-helm3@v3
         with:
