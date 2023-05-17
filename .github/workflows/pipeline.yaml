@@ -78,11 +78,6 @@ jobs:
     needs: build-and-push-image
     steps:
       - uses: actions/checkout@v3
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
-        with:
-          images: ""
       - name: Replace credentials
         run: |
           sed -i 's/$IMG_NAME/${GITHUB_REF_NAME}/g' ./deployment/values.yaml
