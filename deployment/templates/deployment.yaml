@@ -17,24 +17,47 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: [ "java" ]
+          args: ["-javaagent:opentelemetry-javaagent.jar", "-jar", "app.jar"]
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: actuator/health/liveness
+              path: /api/actuator/health/liveness
               port: http
-          readinessProbe:
+            failureTreshold: 5
+            periodSeconds: 10
+          startupProbe:
             httpGet:
-              path: actuator/health/readiness
+              path: /api/actuator/health/readiness
               port: http
-          resources: 
+            initialDelaySeconds: 30
+            failureTreshold: 30
+            periodSeconds: 10
+          resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
+            - name: OTEL_EXPORTER_LOGS
+              value: otlp
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: http://opentelemetry-collector.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_INSECURE
+              value: "true"
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=garbidz"
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
             - name: DB_URL
-              value: jdbc:mysql://mysql.garbidz-test:3306/garbidz
+              value: {{.Values.db_url}}
             - name: DB_USERNAME
-              value: garbidzuser
+              valueFrom:
+                secretKeyRef:
+                  key: db_user
+                  name: garbidz-secret
             - name: DB_PASSWORD
-              value: garbidzpw
+              valueFrom:
+                secretKeyRef:
+                  key: db_password
+                  name: garbidz-secret
