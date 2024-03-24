@@ -7,12 +7,14 @@ import com.github.adamzv.backend.model.Town;
 import com.github.adamzv.backend.repository.RegionRepository;
 import com.github.adamzv.backend.repository.TownRepository;
 import com.github.adamzv.backend.security.annotation.IsModerator;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/towns")
+@Slf4j
 public class TownController {
 
     private TownRepository townRepository;
@@ -28,6 +30,7 @@ public class TownController {
         if (id != null) {
             return townRepository.findAllByRegionId(id);
         } else {
+            log.info("townRepository.findAll()");
             return townRepository.findAll();
         }
     }
