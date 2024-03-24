@@ -2,7 +2,7 @@ package com.github.adamzv.backend.security;
 
 import com.github.adamzv.backend.security.filter.JWTAuthorizationFilter;
 import com.github.adamzv.backend.security.service.UserDetailsServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -22,16 +22,12 @@ import static com.github.adamzv.backend.security.configuration.SecurityConfigura
 @EnableGlobalMethodSecurity(jsr250Enabled = true,
         prePostEnabled = true,
         securedEnabled = true)
+@AllArgsConstructor
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private UserDetailsServiceImpl userDetailsService;
 
-    @Autowired
     private AuthEntryPointJwt unauthorizedHandler;
-
-    public WebSecurityConfiguration(UserDetailsServiceImpl userDetailsService) {
-        this.userDetailsService = userDetailsService;
-    }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
