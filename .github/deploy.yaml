@@ -1,0 +1,13 @@
+# Automatic deployment to a staging environment on every push to master.
+#staging:
+#  auto_deploy_on: refs/pull/*/
+#  required_contexts: ["build-and-push-image"]
+#  environment: staging
+#  description: 'Staging'
+#  payload:
+#    value_files: ["./deployment/values.yml"]
+#    release: garbidz
+#    namespace: garbidz-test
+#    track: stable
+#    values:
+#      replicaCount: 1
