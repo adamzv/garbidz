@@ -1,0 +1,33 @@
+name: Deploy
+
+on:
+  workflow_run:
+    workflows: ["Java CI with Maven"]
+    branches: ["main"]
+    types: 
+      - completed
+
+env:
+  # Use docker.io for Docker Hub if empty
+  REGISTRY: ghcr.io
+  # github.repository as <account>/<repo>
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  deployment:
+    runs-on: 'ubuntu-latest'
+    steps:
+      - uses: actions/checkout@v3
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+      - name: Replace credentials
+        run: |
+          sed -i 's/$IMG_NAME/${{ steps.meta.outputs.tags }}/g' ./deployment/values.yaml
+      - name: Deploy
+        uses: WyriHaximus/github-action-helm3@v3
+        with:
+          exec: helm upgrade garbidz ./deployment --install --wait --namespace=garbidz-test --values=./deployment/values.yaml
+          kubeconfig: '${{ secrets.KUBECONFIG }}'
