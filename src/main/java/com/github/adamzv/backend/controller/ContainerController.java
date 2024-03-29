@@ -10,6 +10,7 @@ import com.github.adamzv.backend.repository.AddressRepository;
 import com.github.adamzv.backend.repository.ContainerRepository;
 import com.github.adamzv.backend.repository.ContainerTypeRepository;
 import com.github.adamzv.backend.security.annotation.IsModerator;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -19,6 +20,7 @@ import java.util.Set;
 
 @RestController
 @RequestMapping("/containers")
+@Slf4j
 public class ContainerController {
 
     private ContainerRepository containerRepository;
