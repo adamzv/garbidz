@@ -10,7 +10,7 @@ services:
       MYSQL_USER: "garb"
       MYSQL_PASSWORD: "garbidz"
     volumes:
-      - "/tmp/docker/db_data:/var/lib/mysql"
+      - "/tmp/docker/db_data2:/var/lib/mysql"
     ports:
       - 3306:3306
     networks:
