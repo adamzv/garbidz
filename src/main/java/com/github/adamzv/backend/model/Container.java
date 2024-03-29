@@ -37,6 +37,6 @@ public class Container {
     @JsonBackReference
     private Set<ContainerSchedule> containerSchedule;
 
-    @ManyToMany(mappedBy = "containers")
+    @ManyToMany(mappedBy = "containers", fetch = FetchType.EAGER)
     private Set<User> users = new HashSet<>();
 }

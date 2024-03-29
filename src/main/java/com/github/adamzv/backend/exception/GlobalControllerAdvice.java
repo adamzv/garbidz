@@ -1,18 +1,16 @@
 package com.github.adamzv.backend.exception;
 
-import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @RestControllerAdvice
@@ -23,6 +21,14 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         String error = "Malformed JSON request";
         return buildResponseEntity(new ApiError(HttpStatus.BAD_REQUEST, error, ex));
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotWritable(HttpMessageNotWritableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        ApiError apiError = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR);
+        apiError.setMessage("Failed to fetch data.");
+        logger.error(ex.getMessage());
+        return buildResponseEntity(apiError);
     }
 
     private ResponseEntity<Object> buildResponseEntity(ApiError apiError) {
@@ -95,7 +101,7 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(ImATeapotException.class)
-    protected ResponseEntity<Object> handleTeaúptInternalErrorException(ImATeapotException ex){
+    protected ResponseEntity<Object> handleTeaúptInternalErrorException(ImATeapotException ex) {
         ApiError apiError = new ApiError(HttpStatus.I_AM_A_TEAPOT);
         apiError.setMessage(ex.getMessage());
         return buildResponseEntity(apiError);
@@ -127,7 +133,7 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
 
     //401
     @ExceptionHandler(HttpClientErrorException.Unauthorized.class)
-    protected ResponseEntity<Object> handleUnauthorized(){
+    protected ResponseEntity<Object> handleUnauthorized() {
         ApiError apiError = new ApiError(HttpStatus.UNAUTHORIZED);
         apiError.setMessage("Unauthorized access!");
         return buildResponseEntity(apiError);
@@ -135,7 +141,7 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
 
     //403
     @ExceptionHandler(HttpClientErrorException.Forbidden.class)
-    protected ResponseEntity<Object> handleForbidden(){
+    protected ResponseEntity<Object> handleForbidden() {
         ApiError apiError = new ApiError(HttpStatus.FORBIDDEN);
         apiError.setMessage("Forbidden request!");
         return buildResponseEntity(apiError);
@@ -143,7 +149,7 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
 
     //409
     @ExceptionHandler(DataIntegrityViolationException.class)
-    protected ResponseEntity<Object> handleConflict(){
+    protected ResponseEntity<Object> handleConflict() {
         ApiError apiError = new ApiError(HttpStatus.CONFLICT);
         apiError.setMessage("There is a conflict with the current state of the target resource!");
         return buildResponseEntity(apiError);
@@ -151,7 +157,7 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
 
     //410
     @ExceptionHandler(HttpClientErrorException.Gone.class)
-    protected ResponseEntity<Object> handleGone(){
+    protected ResponseEntity<Object> handleGone() {
         ApiError apiError = new ApiError(HttpStatus.GONE);
         apiError.setMessage("Gone!");
         return buildResponseEntity(apiError);
@@ -159,7 +165,7 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
 
     //500
     @ExceptionHandler(HttpServerErrorException.InternalServerError.class)
-    protected ResponseEntity<Object> handleUncaughtException(){
+    protected ResponseEntity<Object> handleUncaughtException() {
         ApiError apiError = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR);
         apiError.setMessage("Internal server error!");
         return buildResponseEntity(apiError);
@@ -167,7 +173,7 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
 
     //501
     @ExceptionHandler(HttpServerErrorException.NotImplemented.class)
-    protected ResponseEntity<Object> handleNotImplemented(){
+    protected ResponseEntity<Object> handleNotImplemented() {
         ApiError apiError = new ApiError(HttpStatus.NOT_IMPLEMENTED);
         apiError.setMessage("Functionality is not implemented in the system!");
         return buildResponseEntity(apiError);
@@ -175,7 +181,7 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
 
     //502
     @ExceptionHandler(HttpServerErrorException.BadGateway.class)
-    protected ResponseEntity<Object> handleBadGateway(){
+    protected ResponseEntity<Object> handleBadGateway() {
         ApiError apiError = new ApiError(HttpStatus.BAD_GATEWAY);
         apiError.setMessage("Bad Gateway!");
         return buildResponseEntity(apiError);
@@ -183,7 +189,7 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
 
     //503
     @ExceptionHandler(HttpServerErrorException.ServiceUnavailable.class)
-    protected ResponseEntity<Object> handleServiceUnavailable(){
+    protected ResponseEntity<Object> handleServiceUnavailable() {
         ApiError apiError = new ApiError(HttpStatus.SERVICE_UNAVAILABLE);
         apiError.setMessage("Server is currently unavailable!");
         return buildResponseEntity(apiError);
