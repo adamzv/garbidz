@@ -1,10 +1,7 @@
 package com.github.adamzv.backend.model;
 
-import com.sun.istack.NotNull;
-
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Set;
 
 @Entity
 @Table(name = "container_has_schedule")
@@ -14,7 +11,8 @@ public class ContainerSchedule implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false, fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    //    @ManyToOne(optional = false, fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_container")
     private Container container;
 

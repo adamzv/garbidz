@@ -53,7 +53,7 @@ public class ScheduleController {
         return scheduleRepository.findById(id)
                 .map(schedule -> {
                     schedule.setDatetime(newSchedule.getDatetime());
-                    schedule.setContainerSchedule(newSchedule.getContainerSchedule());
+                    schedule.setScheduleContainer(newSchedule.getScheduleContainer());
                     return scheduleRepository.save(schedule);
                 })
                 .orElseThrow(() -> new RuntimeException("Schedule with id " + id + " can not be updated!"));

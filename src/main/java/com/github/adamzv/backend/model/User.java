@@ -7,6 +7,8 @@ import com.sun.istack.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -77,6 +79,7 @@ public class User implements UserDetails {
     @JoinTable(name = "container_has_user",
             joinColumns = @JoinColumn(name = "id_user"),
             inverseJoinColumns = @JoinColumn(name = "id_container"))
+    @Fetch(FetchMode.SUBSELECT)
     private Set<Container> containers = new HashSet<>();
 
     public User() {

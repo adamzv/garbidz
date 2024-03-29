@@ -2,16 +2,23 @@ package com.github.adamzv.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.sun.istack.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = "schedule")
-public class Schedule{
+@Getter
+@Setter
+@AllArgsConstructor
+public class Schedule {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,9 +27,18 @@ public class Schedule{
     @NotNull
     private Date datetime;
 
-    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL)
+    //    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL)
     @JsonBackReference
-    private Set<ContainerSchedule> containerSchedule = new HashSet<>();
+    @Fetch(FetchMode.SUBSELECT)
+    @ManyToMany(mappedBy = "containerSchedule", fetch = FetchType.EAGER)
+    private Set<Container> scheduleContainer = new HashSet<>();
+
+    public Schedule() {
+    }
+
+    public Schedule(Date datetime) {
+        this.datetime = datetime;
+    }
 
     public Long getId() {
         return id;
@@ -30,13 +46,6 @@ public class Schedule{
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Schedule() {
-    }
-
-    public Schedule(Date datetime) {
-        this.datetime = datetime;
     }
 
     public Date getDatetime() {
@@ -47,14 +56,6 @@ public class Schedule{
         this.datetime = datetime;
     }
 
-    public Set<ContainerSchedule> getContainerSchedule() {
-        return containerSchedule;
-    }
-
-    public void setContainerSchedule(Set<ContainerSchedule> containerSchedule) {
-        this.containerSchedule = containerSchedule;
-    }
-
     @Override
     public String toString() {
         return "Schedule{" +
@@ -62,4 +63,5 @@ public class Schedule{
                 ", datetime=" + datetime +
                 '}';
     }
+
 }
