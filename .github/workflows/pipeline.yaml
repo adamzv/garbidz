@@ -67,7 +67,7 @@ jobs:
       - name: Build and push linux/arm64 Docker image
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
         with:
-          context: ./backend/
+          context: ./
           platforms: linux/arm64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
